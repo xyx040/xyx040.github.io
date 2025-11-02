@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星梦 - 趣味测试</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8A2BE2', // 紫色主色调
+                        secondary: '#FF69B4', // 粉色辅助色
+                        accent: '#FFD700', // 金色点缀
+                        dark: '#1A1A2E', // 深色背景
+                        light: '#F5F5F7' // 浅色背景
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Montserrat', 'sans-serif']
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .text-shadow-lg {
+                text-shadow: 0 4px 8px rgba(0,0,0,0.25);
+            }
+            .bg-gradient-primary {
+                background: linear-gradient(135deg, #8A2BE2 0%, #9932CC 100%);
+            }
+            .bg-gradient-secondary {
+                background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%);
+            }
+            .bg-glass {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            .clip-path-slant {
+                clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark text-light font-sans">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-glass">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
+                    <span class="text-white font-bold text-xl">星</span>
+                </div>
+                <span class="text-xl font-bold text-white">星梦应援站</span>
+            </div>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="text-white hover:text-accent transition-colors duration-300">首页</a>
+                <a href="index.html#about" class="text-white hover:text-accent transition-colors duration-300">关于星梦</a>
+                <a href="index.html#news" class="text-white hover:text-accent transition-colors duration-300">最新动态</a>
+                <a href="index.html#gallery" class="text-white hover:text-accent transition-colors duration-300">写真集</a>
+                <a href="test.html" class="text-accent hover:text-accent transition-colors duration-300 font-medium">趣味测试</a>
+            </div>
+            
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <i class="fa fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-glass">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+                <a href="index.html" class="text-white hover:text-accent transition-colors duration-300 py-2 border-b border-white/10">首页</a>
+                <a href="index.html#about" class="text-white hover:text-accent transition-colors duration-300 py-2 border-b border-white/10">关于星梦</a>
+                <a href="index.html#news" class="text-white hover:text-accent transition-colors duration-300 py-2 border-b border-white/10">最新动态</a>
+                <a href="index.html#gallery" class="text-white hover:text-accent transition-colors duration-300 py-2 border-b border-white/10">写真集</a>
+                <a href="test.html" class="text-accent hover:text-accent transition-colors duration-300 py-2">趣味测试</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面标题 -->
+    <header class="pt-32 pb-16 relative overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-b from-primary/30 to-dark"></div>
+            <div class="absolute top-0 left-0 w-full h-full bg-[url('https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D')] bg-cover bg-center opacity-30"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 text-shadow-lg" data-aos="fade-up">
+                星梦<span class="bg-clip-text text-transparent bg-gradient-to-r from-accent to-secondary">趣味测试</span>
+            </h1>
+            <p class="text-xl text-gray-200 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                测试你对星梦的了解程度，看看你是哪种类型的粉丝！
+            </p>
+        </div>
+    </header>
+
+    <!-- 测试内容 -->
+    <section class="py-16 bg-gradient-to-b from-dark to-dark/80">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto">
+                <!-- 测试容器 -->
+                <div class="bg-glass rounded-2xl p-6 md:p-8 shadow-xl" data-aos="fade-up">
+                    <!-- 测试开始页面 -->
+                    <div id="test-start" class="text-center">
+                        <img src="https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D" 
+                             alt="星梦" 
+                             class="w-32 h-32 mx-auto mb-6 rounded-full border-4 border-white/20">
+                        <h2 class="text-2xl font-bold mb-4">准备好测试你的粉丝等级了吗？</h2>
+                        <p class="text-gray-300 mb-8">
+                            这个测试包含10道关于星梦的问题，看看你能得多少分！
+                        </p>
+                        <button id="start-test-btn" class="px-8 py-3 bg-gradient-primary rounded-full text-white font-medium hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1">
+                            开始测试
+                        </button>
+                    </div>
+                    
+                    <!-- 测试问题页面 -->
+                    <div id="test-questions" class="hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="text-lg font-medium">问题 <span id="current-question">1</span>/10</div>
+                            <div class="text-lg font-medium">得分: <span id="score">0</span></div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h3 id="question-text" class="text-xl font-bold mb-4"></h3>
+                            <div id="options-container" class="space-y-3">
+                                <!-- 选项将通过JavaScript动态添加 -->
+                            </div>
+                        </div>
+                        
+                        <div id="feedback-container" class="hidden mb-6 p-4 rounded-lg">
+                            <p id="feedback-text" class="mb-2"></p>
+                            <p id="explanation-text" class="text-sm text-gray-300"></p>
+                        </div>
+                        
+                        <div class="flex justify-between">
+                            <button id="prev-btn" class="px-6 py-2 bg-white/10 rounded-full text-white font-medium hover:bg-white/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                                上一题
+                            </button>
+                            <button id="next-btn" class="px-6 py-2 bg-gradient-primary rounded-full text-white font-medium hover:shadow-lg hover:shadow-primary/30 transition-all duration-300">
+                                下一题
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 测试结果页面 -->
+                    <div id="test-result" class="hidden text-center">
+                        <h2 class="text-3xl font-bold mb-6">测试结果</h2>
+                        <div class="text-6xl font-bold mb-6 text-accent" id="final-score">0</div>
+                        <div class="mb-8">
+                            <div class="inline-block px-6 py-2 rounded-full text-lg font-medium mb-4" id="result-rank"></div>
+                            <p class="text-gray-300" id="result-description"></p>
+                        </div>
+                        
+                        <div class="flex justify-center space-x-4">
+                            <button id="retry-btn" class="px-6 py-3 bg-white/10 rounded-full text-white font-medium hover:bg-white/20 transition-all duration-300">
+                                重新测试
+                            </button>
+                            <button id="share-btn" class="px-6 py-3 bg-gradient-secondary rounded-full text-white font-medium hover:shadow-lg hover:shadow-secondary/30 transition-all duration-300">
+                                分享结果
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="py-12 bg-dark border-t border-white/10">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">星</span>
+                        </div>
+                        <span class="text-xl font-bold text-white">星梦应援站</span>
+                    </div>
+                    <p class="text-gray-400 max-w-xs">
+                        为虚拟偶像星梦打造的专属应援网站，分享最新动态、写真和趣味测试。
+                    </p>
+                </div>
+                
+                <div class="flex flex-col md:flex-row md:space-x-12 items-center">
+                    <div class="mb-6 md:mb-0">
+                        <h3 class="text-white font-bold mb-3">快速链接</h3>
+                        <ul class="space-y-2">
+                            <li><a href="index.html" class="text-gray-400 hover:text-primary transition-colors duration-300">首页</a></li>
+                            <li><a href="index.html#about" class="text-gray-400 hover:text-primary transition-colors duration-300">关于星梦</a></li>
+                            <li><a href="index.html#news" class="text-gray-400 hover:text-primary transition-colors duration-300">最新动态</a></li>
+                            <li><a href="index.html#gallery" class="text-gray-400 hover:text-primary transition-colors duration-300">写真集</a></li>
+                            <li><a href="test.html" class="text-gray-400 hover:text-primary transition-colors duration-300">趣味测试</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-white font-bold mb-3">关注我们</h3>
+                        <div class="flex space-x-4">
+                            <a href="#" class="w-10 h-10 rounded-fullrounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-colors duration-300">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-colors duration-300">
+                                <i class="fa fa-instagram"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-colors duration-300">
+                                <i class="fa fa-youtube-play"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-colors duration-300">
+                                <i class="fa fa-discord"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 mt-10 pt-6 text-center text-gray-500 text-sm">
+                <p>&copy; 2025 星梦应援站. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 初始化AOS动画库
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
+            
+            // 移动端菜单切换
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // 导航栏滚动效果
+            window.addEventListener('scroll', function() {
+                const nav = document.querySelector('nav');
+                if (window.scrollY > 50) {
+                    nav.classList.add('shadow-lg');
+                } else {
+                    nav.classList.remove('shadow-lg');
+                }
+            });
+            
+            // 测试数据
+            const questions = [
+                {
+                    question: "星梦的出道日期是哪一天？",
+                    options: [
+                        "2023年1月1日",
+                        "2023年3月15日",
+                        "2023年6月10日",
+                        "2023年12月25日"
+                    ],
+                    correctAnswer: 1,
+                    explanation: "星梦于2023年3月15日正式出道，发布了首支单曲《星之梦》。"
+                },
+                {
+                    question: "星梦的代表色是什么颜色？",
+                    options: [
+                        "蓝色",
+                        "粉色",
+                        "紫色",
+                        "黄色"
+                    ],
+                    correctAnswer: 2,
+                    explanation: "星梦的代表色是紫色，象征着神秘与梦想。"
+                },
+                {
+                    question: "星梦的粉丝名称是什么？",
+                    options: [
+                        "星光",
+                        "梦粉",
+                        "星梦人",
+                        "守护者"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "星梦的粉丝名称是'星光'，寓意着粉丝们像星星一样照亮星梦的道路。"
+                },
+                {
+                    question: "星梦发布的第一张专辑名称是什么？",
+                    options: [
+                        "星空之旅",
+                        "梦境启程",
+                        "星光闪耀",
+                        "未来之声"
+                    ],
+                    correctAnswer: 1,
+                    explanation: "星梦的第一张专辑名称是《梦境启程》，于2023年6月发布。"
+                },
+                {
+                    question: "星梦的生日是哪一天？",
+                    options: [
+                        "3月15日",
+                        "6月10日",
+                        "9月21日",
+                        "12月25日"
+                    ],
+                    correctAnswer: 2,
+                    explanation: "星梦的生日设定为9月21日，这一天也是国际和平日。"
+                },
+                {
+                    question: "星梦最喜欢的食物是什么？",
+                    options: [
+                        "草莓蛋糕",
+                        "巧克力",
+                        "寿司",
+                        "拉面"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "星梦最喜欢的食物是草莓蛋糕，她经常在直播中提到这一点。"
+                },
+                {
+                    question: "星梦的身高设定是多少？",
+                    options: [
+                        "155cm",
+                        "158cm",
+                        "162cm",
+                        "165cm"
+                    ],
+                    correctAnswer: 1,
+                    explanation: "星梦的身高设定为158cm。"
+                },
+                {
+                    question: "星梦在虚拟世界中的出生地是哪里？",
+                    options: [
+                        "东京",
+                        "大阪",
+                        "星之国度",
+                        "梦境之城"
+                    ],
+                    correctAnswer: 2,
+                    explanation: "星梦的设定是来自'星之国度'的神秘偶像。"
+                },
+                {
+                    question: "星梦的代表动物是什么？",
+                    options: [
+                        "兔子",
+                        "猫",
+                        "狐狸",
+                        "独角兽"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "星梦的代表动物是独角兽，象征着纯洁与魔法。"
+                },
+                {
+                    question: "星梦的口头禅是什么？",
+                    options: [
+                        "一起加油吧！",
+                        "星空真漂亮呢",
+                        "梦想是要有的",
+                        "今天也要闪闪发光！"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "星梦的口头禅是'今天也要闪闪发光！'，鼓励粉丝们每天都要积极向上。"
+                }
+            ];
+            
+            // 测试结果等级
+            const resultRanks = [
+                {
+                    minScore: 0,
+                    maxScore: 3,
+                    rank: "初心者",
+                    description: "你刚刚开始了解星梦，继续加油吧！",
+                    color: "bg-gray-500"
+                },
+                {
+                    minScore: 4,
+                    maxScore: 6,
+                    rank: "普通粉丝",
+                    description: "你对星梦有一定的了解，继续关注她的作品吧！",
+                    color: "bg-blue-500"
+                },
+                {
+                    minScore: 7,
+                    maxScore: 9,
+                    rank: "忠实粉丝",
+                    description: "你是星梦的忠实粉丝，对她的了解很深入！",
+                    color: "bg-purple-500"
+                },
+                {
+                    minScore: 10,
+                    maxScore: 10,
+                    rank: "终极粉丝",
+                    description: "你是星梦的终极粉丝，对她的一切都了如指掌！",
+                    color: "bg-pink-500"
+                }
+            ];
+            
+            // DOM元素
+            const testStart = document.getElementById('test-start');
+            const testQuestions = document.getElementById('test-questions');
+            const testResult = document.getElementById('test-result');
+            
+            const startTestBtn = document.getElementById('start-test-btn');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const retryBtn = document.getElementById('retry-btn');
+            const shareBtn = document.getElementById('share-btn');
+            
+            const currentQuestionEl = document.getElementById('current-question');
+            const scoreEl = document.getElementById('score');
+            const questionTextEl = document.getElementById('question-text');
+            const optionsContainerEl = document.getElementById('options-container');
+            
+            const feedbackContainerEl = document.getElementById('feedback-container');
+            const feedbackTextEl = document.getElementById('feedback-text');
+            const explanationTextEl = document.getElementById('explanation-text');
+            
+            const finalScoreEl = document.getElementById('final-score');
+            const resultRankEl = document.getElementById('result-rank');
+            const resultDescriptionEl = document.getElementById('result-description');
+            
+            // 测试状态
+            let currentQuestion = 0;
+            let score = 0;
+            let userAnswers = [];
+            
+            // 开始测试
+            startTestBtn.addEventListener('click', startTest);
+            
+            // 上一题
+            prevBtn.addEventListener('click', goToPreviousQuestion);
+            
+            // 下一题
+            nextBtn.addEventListener('click', goToNextQuestion);
+            
+            // 重新测试
+            retryBtn.addEventListener('click', resetTest);
+            
+            // 分享结果
+            shareBtn.addEventListener('click', shareResult);
+            
+            // 开始测试函数
+            function startTest() {
+                testStart.classList.add('hidden');
+                testQuestions.classList.remove('hidden');
+                
+                currentQuestion = 0;
+                score = 0;
+                userAnswers = new Array(questions.length).fill(null);
+                
+                showQuestion(currentQuestion);
+            }
+            
+            // 显示问题函数
+            function showQuestion(index) {
+                const question = questions[index];
+                
+                currentQuestionEl.textContent = index + 1;
+                scoreEl.textContent = score;
+                questionTextEl.textContent = question.question;
+                
+                // 清空选项容器
+                optionsContainerEl.innerHTML = '';
+                
+                // 添加选项
+                question.options.forEach((option, i) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option p-4 border border-white/20 rounded-lg cursor-pointer hover:bg-white/5 transition-colors duration-300';
+                    
+                    // 如果用户已经回答过这个问题，显示选择状态
+                    if (userAnswers[index] === i) {
+                        optionDiv.classList.add('bg-primary/20', 'border-primary');
+                    }
+                    
+                    optionDiv.innerHTML = `
+                        <label class="flex items-center cursor-pointer">
+                            <input type="radio" name="question" value="${i}" class="mr-3 accent-primary" ${userAnswers[index] === i ? 'checked' : ''}>
+                            <span>${option}</span>
+                        </label>
+                    `;
+                    
+                    optionsContainerEl.appendChild(optionDiv);
+                    
+                    // 添加选项点击事件
+                    optionDiv.addEventListener('click', function() {
+                        // 移除其他选项的选中状态
+                        document.querySelectorAll('.option').forEach(opt => {
+                            opt.classList.remove('bg-primary/20', 'border-primary');
+                        });
+                        
+                        // 添加当前选项的选中状态
+                        this.classList.add('bg-primary/20', 'border-primary');
+                        
+                        // 更新用户答案
+                        userAnswers[currentQuestion] = i;
+                        
+                        // 显示反馈
+                        showFeedback(i === question.correctAnswer, question.explanation);
+                    });
+                });
+                
+                // 更新按钮状态
+                prevBtn.disabled = index === 0;
+                
+                if (index === questions.length - 1) {
+                    nextBtn.textContent = '查看结果';
+                } else {
+                    nextBtn.textContent = '下一题';
+                }
+                
+                // 隐藏反馈
+                feedbackContainerEl.classList.add('hidden');
+            }
+            
+            // 显示反馈函数
+            function showFeedback(isCorrect, explanation) {
+                feedbackContainerEl.classList.remove('hidden');
+                
+                if (isCorrect) {
+                    feedbackContainerEl.className = 'mb-6 p-4 rounded-lg bg-green-500/20 border border-green-500';
+                    feedbackTextEl.className = 'mb-2 text-green-400';
+                    feedbackTextEl.textContent = '回答正确！';
+                } else {
+                    feedbackContainerEl.className = 'mb-6 p-4 rounded-lg bg-red-500/20 border border-red-500';
+                    feedbackTextEl.className = 'mb-2 text-red-400';
+                    feedbackTextEl.textContent = '回答错误！';
+                }
+                
+                explanationTextEl.textContent = explanation;
+            }
+            
+            // 上一题函数
+            function goToPreviousQuestion() {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    showQuestion(currentQuestion);
+                }
+            }
+            
+            // 下一题函数
+            function goToNextQuestion() {
+                // 如果用户没有回答当前问题，提示回答
+                if (userAnswers[currentQuestion] === null) {
+                    alert('请选择一个答案！');
+                    return;
+                }
+                
+                // 如果是最后一题，显示结果
+                if (currentQuestion === questions.length - 1) {
+                    showResult();
+                    return;
+                }
+                
+                // 否则，进入下一题
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }
+            
+            // 显示结果函数
+            function showResult() {
+                // 计算得分
+                score = 0;
+                userAnswers.forEach((answer, index) => {
+                    if (answer === questions[index].correctAnswer) {
+                        score++;
+                    }
+                });
+                
+                // 更新结果页面
+                finalScoreEl.textContent = score;
+                
+                // 确定等级
+                const rank = resultRanks.find(rank => {
+                    return score >= rank.minScore && score <= rank.maxScore;
+                });
+                
+                resultRankEl.textContent = rank.rank;
+                resultRankEl.className = `inline-block px-6 py-2 rounded-full text-lg font-medium mb-4 ${rank.color}`;
+                resultDescriptionEl.textContent = rank.description;
+                
+                // 显示结果页面
+                testQuestions.classList.add('hidden');
+                testResult.classList.remove('hidden');
+            }
+            
+            // 重置测试函数
+            function resetTest() {
+                testResult.classList.add('hidden');
+                testStart.classList.remove('hidden');
+            }
+            
+            // 分享结果函数
+            function shareResult() {
+                const rank = resultRanks.find(rank => {
+                    return score >= rank.minScore && score <= rank.maxScore;
+                });
+                
+                const shareText = `我在星梦趣味测试中获得了${score}分，被评为"${rank.rank}"！快来挑战看看你能得多少分吧！`;
+                
+                // 尝试使用Web Share API
+                if (navigator.share) {
+                    navigator.share({
+                        title: '星梦趣味测试结果',
+                        text: shareText,
+                        url: window.location.href
+                    }).catch(err => {
+                        console.log('分享失败:', err);
+                        copyToClipboard(shareText);
+                    });
+                } else {
+                    copyToClipboard(shareText);
+                }
+            }
+            
+            // 复制到剪贴板函数
+            function copyToClipboard(text) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                alert('结果已复制到剪贴板！');
+            }
+        });
+    </script>
+</body>
+</html>
