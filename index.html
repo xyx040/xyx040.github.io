@@ -1,454 +1,991 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<html lang="zh-CN"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>星梦 - 二次元偶像应援站</title>
-    <!-- Tailwind CSS v3 -->
+    <title>爱心宠物领养平台 - 给它们一个温暖的家</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <!-- AOS Animation Library -->
-    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#8A2BE2', // 紫色主色调
-                        secondary: '#FF69B4', // 粉色辅助色
-                        accent: '#FFD700', // 金色点缀
-                        dark: '#1A1A2E', // 深色背景
-                        light: '#F5F5F7' // 浅色背景
+                        primary: '#F5E8C7',      // 米黄色
+                        secondary: '#FFA07A',    // 浅橙色
+                        tertiary: '#A67C52',     // 浅棕色
+                        light: '#FAF6F0',        // 更浅的米黄色
+                        dark: '#5D4037',         // 深棕色
                     },
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                        display: ['Montserrat', 'sans-serif']
+                        inter: ['Inter', 'sans-serif'],
                     },
-                    animation: {
-                        'float': 'float 3s ease-in-out infinite',
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' }
-                        }
-                    }
                 }
             }
         }
     </script>
+    
     <style type="text/tailwindcss">
         @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
             .text-shadow {
                 text-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
-            .text-shadow-lg {
-                text-shadow: 0 4px 8px rgba(0,0,0,0.25);
+            .card-hover {
+                transition: all 0.3s ease;
             }
-            .bg-gradient-primary {
-                background: linear-gradient(135deg, #8A2BE2 0%, #9932CC 100%);
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             }
-            .bg-gradient-secondary {
-                background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%);
+            .btn-primary {
+                @apply bg-secondary hover:bg-secondary/90 text-white font-medium py-3 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1;
             }
-            .bg-glass {
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.2);
+            .btn-secondary {
+                @apply bg-white hover:bg-gray-50 text-tertiary border border-tertiary font-medium py-3 px-6 rounded-full transition-all duration-300 shadow-sm hover:shadow-md;
             }
-            .clip-path-slant {
-                clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            .section-padding {
+                @apply py-16 md:py-24;
+            }
+            .section-title {
+                @apply text-[clamp(2rem,5vw,3rem)] font-bold text-dark mb-4 text-center;
+            }
+            .section-subtitle {
+                @apply text-[clamp(1rem,2vw,1.25rem)] text-gray-600 max-w-3xl mx-auto text-center mb-12;
             }
         }
     </style>
 </head>
-<body class="bg-dark text-light font-sans">
+<body class="font-inter bg-light text-gray-800">
     <!-- 导航栏 -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-glass">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <div class="w-10 h-10 rounded-full rounded-full bg-gradient-primary flex items-center justify-center">
-                    <span class="text-white font-bold text-xl">星</span>
-                </div>
-                <span class="text-xl font-bold text-white">星梦应援站</span>
-            </div>
+    <header id="navbar" class="fixed w-full z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="#" class="flex items-center">
+                <i class="fa fa-paw text-tertiary text-3xl mr-2"></i>
+                <span class="text-2xl font-bold text-dark">爱宠之家</span>
+            </a>
             
-            <div class="hidden md:flex space-x-8">
-                <a href="index.html" class="text-white hover:text-accent transition-colors duration-300 font-medium">首页</a>
-                <a href="#about" class="text-white hover:text-accent transition-colors duration-300">关于星梦</a>
-                <a href="#news" class="text-white hover:text-accent transition-colors duration-300">最新动态</a>
-                <a href="#gallery" class="text-white hover:text-accent transition-colors duration-300">写真集</a>
-                <a href="test.html" class="text-white hover:text-accent transition-colors duration-300">趣味测试</a>
-            </div>
+            <!-- 桌面导航 -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="#home" class="font-medium text-dark hover:text-tertiary transition-colors">首页</a>
+                <a href="#pets" class="font-medium text-dark hover:text-tertiary transition-colors">可领养宠物</a>
+                <a href="#process" class="font-medium text-dark hover:text-tertiary transition-colors">领养流程</a>
+                <a href="#stories" class="font-medium text-dark hover:text-tertiary transition-colors">成功故事</a>
+                <a href="#locations" class="font-medium text-dark hover:text-tertiary transition-colors">领养地点</a>
+                <a href="#volunteer" class="font-medium text-dark hover:text-tertiary transition-colors">加入我们</a>
+            </nav>
             
-            <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-white focus:outline-none">
-                    <i class="fa fa-bars text-xl"></i>
-                </button>
-            </div>
+            <!-- 移动端菜单按钮 -->
+            <button id="menu-toggle" class="md:hidden text-dark text-2xl">
+                <i class="fa fa-bars"></i>
+            </button>
+            
+            <!-- 立即领养按钮 -->
+            <a href="#pets" class="hidden md:block btn-primary">
+                立即领养
+            </a>
         </div>
         
-        <!-- 移动端菜单 -->
-        <div id="mobile-menu" class="hidden md:hidden bg-glass">
-            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
-                <a href="index.html" class="text-white hover:text-accent transition-colors duration-300 py-2 border-b border-white/10">首页</a>
-                <a href="#about" class="text-white hover:text-accent transition-colors duration-300 py-2 border-b border-white/10">关于星梦</a>
-                <a href="#news" class="text-white hover:text-accent transition-colors duration-300 py-2 border-b border-white/10">最新动态</a>
-                <a href="#gallery" class="text-white hover:text-accent transition-colors duration-300 py-2 border-b border-white/10">写真集</a>
-                <a href="test.html" class="text-white hover:text-accent transition-colors duration-300 py-2">趣味测试</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- 英雄区域 -->
-    <header class="pt-24 pb-16 md:pt-32 md:pb-24 relative overflow-hidden">
-        <div class="absolute inset-0 z-0">
-            <div class="absolute inset-0 bg-gradient-to-b from-primary/30 to-dark"></div>
-            <div class="absolute top-0 left-0 w-full h-full bg-[url('https://p9-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D')] bg-cover bg-center opacity-30"></div>
-        </div>
-        
-        <div class="container mx-auto px-4 relative z-10">
-            <div class="flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 mb-8 md:mb-0" data-aos="fade-right" data-aos-duration="1000">
-                    <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 text-shadow-lg">
-                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-accent to-secondary">星梦</span>
-                    </h1>
-                    <p class="text-xl md:text-2xl mb-6 text-gray-200 max-w-lg">
-                        闪耀于夜空的虚拟偶像，用歌声传递梦想与希望
-                    </p>
-                    <div class="flex flex-wrap gap-4">
-                        <a href="#about" class="px-6 py-3 bg-gradient-primary rounded-full text-white font-medium hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1">
-                            了解更多
-                        </a>
-                        <a href="test.html" class="px-6 py-3 bg-gradient-secondary rounded-full text-white font-medium hover:shadow-lg hover:shadow-secondary/30 transition-all duration-300 transform hover:-translate-y-1">
-                            开始测试
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="md:w-1/2 flex justify-center" data-aos="fade-left" data-aos-duration="1000">
-                    <div class="relative w-64 h-64 md:w-80 md:h-80">
-                        <div class="absolute inset-0 rounded-full bg-gradient-primary opacity-20 animate-pulse-slow"></div>
-                        <img src="https://p9-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D" 
-                             alt="星梦" 
-                             class="relative z-10 w-full h-full object-cover rounded-full border-4 border-white/20 shadow-2xl animate-float">
-                    </div>
-                </div>
+        <!-- 移动端导航菜单 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg absolute w-full">
+            <div class="container mx-auto px-4 py-4 flex flex-col space-y-4">
+                <a href="#home" class="font-medium text-dark hover:text-tertiary transition-colors py-2">首页</a>
+                <a href="#pets" class="font-medium text-dark hover:text-tertiary transition-colors py-2">可领养宠物</a>
+                <a href="#process" class="font-medium text-dark hover:text-tertiary transition-colors py-2">领养流程</a>
+                <a href="#stories" class="font-medium text-dark hover:text-tertiary transition-colors py-2">成功故事</a>
+                <a href="#locations" class="font-medium text-dark hover:text-tertiary transition-colors py-2">领养地点</a>
+                <a href="#volunteer" class="font-medium text-dark hover:text-tertiary transition-colors py-2">加入我们</a>
+                <a href="#pets" class="btn-primary text-center">
+                    立即领养
+                </a>
             </div>
         </div>
     </header>
 
-    <!-- 关于星梦 -->
-    <section id="about" class="py-16 bg-gradient-to-b from-dark to-dark/80">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-12" data-aos="fade-up">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">关于<span class="text-primary">星梦</span></h2>
-                <div class="w-24 h-1 bg-gradient-primary mx-auto rounded-full"></div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div data-aos="fade-right">
-                    <img src="https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D" 
-                         alt="星梦" 
-                         class="w-full h-auto rounded-lg shadow-xl">
-                </div>
-                
-                <div data-aos="fade-left">
-                    <h3 class="text-2xl font-bold mb-4 text-primary">虚拟偶像 · 星梦</h3>
-                    <p class="text-gray-300 mb-6 leading-relaxed">
-                        星梦是一位来自未来的虚拟偶像，拥有天籁般的歌声和可爱的外表。她不仅能够演唱各种风格的歌曲，还能与粉丝进行实时互动，分享生活中的点滴。
-                    </p>
-                    <p class="text-gray-300 mb-6 leading-relaxed">
-                        作为一名AI驱动的虚拟偶像，星梦不断学习和成长，为粉丝带来更多精彩的表演和内容。她的目标是用音乐连接每一个人的心灵，传递温暖和希望。
-                    </p>
-                    
-                    <div class="grid grid-cols-2 gap-4 mt-8">
-                        <div class="bg-glass p-4 rounded-lg text-center">
-                            <div class="text-3xl font-bold text-accent mb-2">100+</div>
-                            <div class="text-gray-400">发布歌曲</div>
-                        </div>
-                        <div class="bg-glass p-4 rounded-lg text-center">
-                            <div class="text-3xl font-bold text-accent mb-2">500万+</div>
-                            <div class="text-gray-400">粉丝数量</div>
-                        </div>
-                        <div class="bg-glass p-4 rounded-lg text-center">
-                            <div class="text-3xl font-bold text-accent mb-2">50+</div>
-                            <div class="text-gray-400">直播场次</div>
-                        </div>
-                        <div class="bg-glass p-4 rounded-lg text-center">
-                            <div class="text-3xl font-bold text-accent mb-2">10+</div>
-                            <div class="text-gray-400">获奖次数</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 最新动态 -->
-    <section id="news" class="py-16 bg-dark/80">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-12" data-aos="fade-up">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">最新<span class="text-primary">动态</span></h2>
-                <div class="w-24 h-1 bg-gradient-primary mx-auto rounded-full"></div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- 新闻卡片 1 -->
-                <div class="bg-glass rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" data-aos="fade-up" data-aos-delay="100">
-                    <div class="h-48 overflow-hidden">
-                        <img src="https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D" 
-                             alt="星梦新单曲发布" 
-                             class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="text-xs text-gray-400">2025年7月15日</span>
-                            <span class="px-3 py-1 bg-primary/20 text-primary text-xs rounded-full">新作品</span>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">新单曲《星之梦》发布</h3>
-                        <p class="text-gray-400 mb-4 line-clamp-3">
-                            星梦全新单曲《星之梦》今日正式上线各大音乐平台，这首歌曲融合了流行与电子元素，展现了星梦多元化的音乐风格...
-                        </p>
-                        <a href="#" class="text-primary hover:text-accent transition-colors duration-300 flex items-center">
-                            阅读更多 <i class="fa fa-arrow-right ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- 新闻卡片 2 -->
-                <div class="bg-glass rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" data-aos="fade-up" data-aos-delay="200">
-                    <div class="h-48 overflow-hidden">
-                        <img src="https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D" 
-                             alt="星梦线上演唱会" 
-                             class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="text-xs text-gray-400">2025年7月10日</span>
-                            <span class="px-3 py-1 bg-secondary/20 text-secondary text-xs rounded-full">活动</span>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">线上演唱会圆满成功</h3>
-                        <p class="text-gray-400 mb-4 line-clamp-3">
-                            星梦"星空之下"线上演唱会吸引了超过100万粉丝观看，演唱会中星梦表演了多首热门歌曲，并首次公开了新专辑的预告片...
-                        </p>
-                        <a href="#" class="text-primary hover:text-accent transition-colors duration-300 flex items-center">
-                            阅读更多 <i class="fa fa-arrow-right ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- 新闻卡片 3 -->
-                <div class="bg-glass rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" data-aos="fade-up" data-aos-delay="300">
-                    <div class="h-48 overflow-hidden">
-                        <img src="https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D" 
-                             alt="星梦代言" 
-                             class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="text-xs text-gray-400">2025年7月5日</span>
-                            <span class="px-3 py-1 bg-accent/20 text-accent text-xs rounded-full">合作</span>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">星梦成为知名品牌代言人</h3>
-                        <p class="text-gray-400 mb-4 line-clamp-3">
-                            星梦正式宣布成为国际知名品牌"未来科技"的形象代言人，双方将共同推出一系列创新产品和营销活动...
-                        </p>
-                        <a href="#" class="text-primary hover:text-accent transition-colors duration-300 flex items-center">
-                            阅读更多 <i class="fa fa-arrow-right ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 写真集 -->
-    <section id="gallery" class="py-16 bg-dark">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-12" data-aos="fade-up">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">写真<span class="text-primary">集</span></h2>
-                <div class="w-24 h-1 bg-gradient-primary mx-auto rounded-full"></div>
-            </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="overflow-hidden rounded-lg group" data-aos="fade-up" data-aos-delay="100">
-                    <img src="https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D" 
-                         alt="星梦写真" 
-                         class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
-                </div>
-                <div class="overflow-hidden rounded-lg group" data-aos="fade-up" data-aos-delay="200">
-                    <img src="https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D" 
-                         alt="星梦写真" 
-                         class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
-                </div>
-                <div class="overflow-hidden rounded-lg group" data-aos="fade-up" data-aos-delay="300">
-                    <img src="https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D" 
-                         alt="星梦写真" 
-                         class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
-                </div>
-                <div class="overflow-hidden rounded-lg group" data-aos="fade-up" data-aos-delay="400">
-                    <img src="https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D" 
-                         alt="星梦写真" 
-                         class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
-                </div>
-                <div class="overflow-hidden rounded-lg group" data-aos="fade-up" data-aos-delay="500">
-                    <img src="https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D" 
-                         alt="星梦写真" 
-                         class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
-                </div>
-                <div class="overflow-hidden rounded-lg group" data-aos="fade-up" data-aos-delay="600">
-                    <img src="https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D" 
-                         alt="星梦写真" 
-                         class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
-                </div>
-                <div class="overflow-hidden rounded-lg group" data-aos="fade-up" data-aos-delay="700">
-                    <img src="https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D" 
-                         alt="星梦写真" 
-                         class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
-                </div>
-                <div class="overflow-hidden rounded-lg group" data-aos="fade-up" data-aos-delay="800">
-                    <img src="https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D" 
-                         alt="星梦写真" 
-                         class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 趣味测试入口 -->
-    <section class="py-16 bg-gradient-to-b from-dark to-dark/80 relative overflow-hidden">
-        <div class="absolute inset-0 z-0">
-            <div class="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20"></div>
-            <div class="absolute top-0 left-0 w-full h-full bg-[url('https://p3-flow-sign.byteimg.com/tos-cn-i-a9rns2rl98/labis/99363b3d10b541f5b55434285988c633~tplv-a9rns2rl98-image.image?rk3s=1b12f48f&x-expires=1758631415&x-signature=84kq1zqG4z9%2F3Jc0J%2Fq9bJkG%2F2M%3D')] bg-cover bg-center opacity-10"></div>
-        </div>
-        
+    <!-- 英雄区域 -->
+    <section id="home" class="pt-28 pb-16 md:pt-40 md:pb-24 bg-gradient-to-br from-primary/30 to-light relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-full h-full bg-[url('https://picsum.photos/id/1025/1200/800')] bg-cover bg-center opacity-10"></div>
         <div class="container mx-auto px-4 relative z-10">
-            <div class="text-center mb-12" data-aos="fade-up">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">趣味<span class="text-primary">测试</span></h2>
-                <div class="w-24 h-1 bg-gradient-primary mx-auto rounded-full mb-6"></div>
-                <p class="text-gray-300 max-w-2xl mx-auto">
-                    想知道你是星梦的哪种粉丝类型吗？来参加这个趣味测试，看看你对星梦的了解有多深！
-                </p>
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-[clamp(2.5rem,5vw,4rem)] font-bold text-dark leading-tight text-shadow mb-6">
+                        给它们一个<br>温暖的家
+                    </h1>
+                    <p class="text-[clamp(1rem,2vw,1.25rem)] text-gray-700 mb-8 max-w-lg">
+                        每一个生命都值得被爱。在爱宠之家，我们致力于为流浪的猫咪和狗狗寻找永久的家，同时帮助您找到最适合的伴侣。
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#pets" class="btn-primary text-center">
+                            <i class="fa fa-heart mr-2"></i> 寻找我的毛孩子
+                        </a>
+                        <a href="#process" class="btn-secondary text-center">
+                            <i class="fa fa-info-circle mr-2"></i> 了解领养流程
+                        </a>
+                    </div>
+                    <div class="flex items-center mt-10 space-x-6">
+                        <div class="flex -space-x-2">
+                            <img src="https://picsum.photos/id/64/100/100" alt="领养人照片" class="w-10 h-10 rounded-full border-2 border-white">
+                            <img src="https://picsum.photos/id/65/100/100" alt="领养人照片" class="w-10 h-10 rounded-full border-2 border-white">
+                            <img src="https://picsum.photos/id/66/100/100" alt="领养人照片" class="w-10 h-10 rounded-full border-2 border-white">
+                        </div>
+                        <p class="text-sm text-gray-600">
+                            <span class="font-semibold text-tertiary">500+</span> 宠物已找到新家
+                        </p>
+                    </div>
+                </div>
+                <div class="md:w-1/2 relative">
+                    <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl transform md:rotate-2 hover:rotate-0 transition-transform duration-500">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/70cb610edcc8459481e000c7d1f1dd62~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370349&amp;x-signature=jmJazsyE0LgkbvzhpxWgPMQ6Sws%3D" alt="等待领养的宠物" class="w-full h-auto">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+                            <p class="text-white font-medium text-lg">每一只宠物都值得被温柔以待</p>
+                        </div>
+                    </div>
+                    <div class="absolute -bottom-6 -left-6 w-40 h-40 bg-secondary/30 rounded-full blur-2xl -z-10"></div>
+                    <div class="absolute -top-6 -right-6 w-40 h-40 bg-tertiary/20 rounded-full blur-2xl -z-10"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 可领养宠物展示区 -->
+    <section id="pets" class="section-padding bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title">等待领养的毛孩子</h2>
+            <p class="section-subtitle">
+                浏览我们的可领养宠物列表，找到您的完美伴侣。每只宠物都经过健康检查和疫苗接种，期待着一个充满爱的家。
+            </p>
+            
+            <!-- 筛选器 -->
+            <div class="mb-10 bg-light rounded-xl p-6 shadow-sm">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <label class="block text-gray-700 font-medium mb-2">宠物类型</label>
+                        <select class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tertiary/50 focus:border-tertiary">
+                            <option value="">全部</option>
+                            <option value="dog">狗狗</option>
+                            <option value="cat">猫咪</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-gray-700 font-medium mb-2">年龄</label>
+                        <select class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tertiary/50 focus:border-tertiary">
+                            <option value="">全部</option>
+                            <option value="baby">幼年</option>
+                            <option value="young">青年</option>
+                            <option value="adult">成年</option>
+                            <option value="senior">老年</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-gray-700 font-medium mb-2">性格</label>
+                        <select class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tertiary/50 focus:border-tertiary">
+                            <option value="">全部</option>
+                            <option value="playful">活泼好动</option>
+                            <option value="calm">安静温顺</option>
+                            <option value="friendly">友好亲人</option>
+                            <option value="independent">独立自主</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button class="w-full md:w-auto btn-primary">
+                            <i class="fa fa-search mr-2"></i> 筛选
+                        </button>
+                    </div>
+                </div>
             </div>
             
-            <div class="flex justify-center" data-aos="zoom-in">
-                <a href="test.html" class="px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-full text-white font-bold text-lg hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 flex items-center">
-                    <i class="fa fa-gamepad mr-2"></i> 开始测试
+            <!-- 宠物卡片网格 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <!-- 宠物卡片 1 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
+                    <div class="relative">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/23654b4de74d408e81839d8411939c35~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370213&amp;x-signature=iJgqcQCAgf%2F5FqAWb1EdhCIps0M%3D" alt="金毛犬" class="w-full h-64 object-cover">
+                        <div class="absolute top-4 left-4 bg-secondary text-white text-sm font-medium py-1 px-3 rounded-full">
+                            狗狗
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-bold text-dark">金金</h3>
+                            <span class="text-sm text-gray-600">1岁</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">金金是一只活泼开朗的金毛犬，非常友好，喜欢和人互动，适合有孩子的家庭。</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">友善</span>
+                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">活泼</span>
+                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">聪明</span>
+                        </div>
+                        <a href="#" class="block w-full text-center py-3 px-4 bg-primary hover:bg-primary/90 text-tertiary font-medium rounded-lg transition-colors">
+                            申请领养
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 宠物卡片 2 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
+                    <div class="relative">
+                        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/10596a60e6fd431290b8f4764d2d086c~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370259&amp;x-signature=byWql7HGh4e6S%2FZicArjmtHAIaw%3D" alt="橘猫" class="w-full h-64 object-cover">
+                        <div class="absolute top-4 left-4 bg-secondary text-white text-sm font-medium py-1 px-3 rounded-full">
+                            猫咪
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-bold text-dark">米米</h3>
+                            <span class="text-sm text-gray-600">2岁</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">米米是一只温顺的波斯猫，喜欢安静的环境，偶尔会撒娇，适合独居或安静的家庭。</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">温顺</span>
+                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">独立</span>
+                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">粘人</span>
+                        </div>
+                        <a href="#" class="block w-full text-center py-3 px-4 bg-primary hover:bg-primary/90 text-tertiary font-medium rounded-lg transition-colors">
+                            申请领养
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 宠物卡片 3 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
+                    <div class="relative">
+                        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/e2aa792674c843c9be1f48cf123baf6b~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370288&amp;x-signature=ONm%2BGHHpPhVK4kNwrigJIft7WVs%3D" alt="拉布拉多" class="w-full h-64 object-cover">
+                        <div class="absolute top-4 left-4 bg-secondary text-white text-sm font-medium py-1 px-3 rounded-full">
+                            狗狗
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-bold text-dark">多多</h3>
+                            <span class="text-sm text-gray-600">3岁</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">多多是一只训练有素的拉布拉多，非常聪明，已经学会了很多指令，适合有经验的主人。</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">聪明</span>
+                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">听话</span>
+                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">温顺</span>
+                        </div>
+                        <a href="#" class="block w-full text-center py-3 px-4 bg-primary hover:bg-primary/90 text-tertiary font-medium rounded-lg transition-colors">
+                            申请领养
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 宠物卡片 4 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
+                    <div class="relative">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/0921f5ff476f4c488966147d52d8a925~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370312&amp;x-signature=za3WUTvA80kgvGzT%2B13rGqIbzfA%3D" alt="布偶猫" class="w-full h-64 object-cover">
+                        <div class="absolute top-4 left-4 bg-secondary text-white text-sm font-medium py-1 px-3 rounded-full">
+                            猫咪
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-bold text-dark">布布</h3>
+                            <span class="text-sm text-gray-600">1岁</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">
+                            布布是一只漂亮的布偶猫，毛发柔软，性格温顺，喜欢被人抚摸，是理想的伴侣猫。
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">漂亮</span>
+                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">温顺</span>
+                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">亲人</span>
+                        </div>
+                        <a href="#" class="block w-full text-center py-3 px-4 bg-primary hover:bg-primary/90 text-tertiary font-medium rounded-lg transition-colors">
+                            申请领养
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 查看更多按钮 -->
+            <div class="text-center mt-12">
+                <a href="#" class="inline-flex items-center text-tertiary font-medium hover:text-tertiary/80 transition-colors">
+                    查看更多宠物 <i class="fa fa-long-arrow-right ml-2"></i>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- 页脚 -->
-    <footer class="py-12 bg-dark border-t border-white/10">
+    <!-- 领养流程 -->
+    <section id="process" class="section-padding bg-primary/20">
         <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-6 md:mb-0">
-                    <div class="flex items-center space-x-2 mb-4">
-                        <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">
-                            <span class="text-white font-bold text-xl">星</span>
-                        </div>
-                        <span class="text-xl font-bold text-white">星梦应援站</span>
-                    </div>
-                    <p class="text-gray-400 max-w-xs">
-                        为虚拟偶像星梦打造的专属应援网站，分享最新动态、写真和趣味测试。
-                    </p>
-                </div>
+            <h2 class="section-title">领养流程</h2>
+            <p class="section-subtitle">
+                领养一只宠物是一项长期的承诺，我们希望确保每只宠物都能找到最适合它们的家。以下是我们的领养流程：
+            </p>
+            
+            <div class="relative">
+                <!-- 连接线 -->
+                <div class="hidden md:block absolute left-1/2 top-1/4 bottom-1/4 w-1 bg-tertiary/30 transform -translate-x-1/2"></div>
                 
-                <div class="flex flex-col md:flex-row md:space-x-12 items-center">
-                    <div class="mb-6 md:mb-0">
-                        <h3 class="text-white font-bold mb-3">快速链接</h3>
-                        <ul class="space-y-2">
-                            <li><a href="index.html" class="text-gray-400 hover:text-primary transition-colors duration-300">首页</a></li>
-                            <li><a href="#about" class="text-gray-400 hover:text-primary transition-colors duration-300">关于星梦</a></li>
-                            <li><a href="#news" class="text-gray-400 hover:text-primary transition-colors duration-300">最新动态</a></li>
-                            <li><a href="#gallery" class="text-gray-400 hover:text-primary transition-colors duration-300">写真集</a></li>
-                            <li><a href="test.html" class="text-gray-400 hover:text-primary transition-colors duration-300">趣味测试</a></li>
-                        </ul>
+                <!-- 步骤列表 -->
+                <div class="space-y-12 md:space-y-24 relative">
+                    <!-- 步骤 1 -->
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 md:pr-12 mb-8 md:mb-0 md:text-right">
+                            <h3 class="text-xl font-bold text-dark mb-3">浏览与选择</h3>
+                            <p class="text-gray-600">
+                                浏览我们网站上的可领养宠物，根据您的生活方式和偏好选择合适的伴侣。每只宠物都有详细的介绍和照片。
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-center w-16 h-16 bg-tertiary text-white rounded-full text-2xl font-bold mb-8 md:mb-0 z-10">
+                            1
+                        </div>
+                        <div class="md:w-1/2 md:pl-12">
+                            <div class="bg-white p-6 rounded-xl shadow-md">
+                                <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/b6f2dbf8bffd45239fe49477abead799~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370164&amp;x-signature=PBZd%2Fk2YHdJyeTJlS0wVgRH7FDw%3D" alt="浏览宠物" class="w-full h-48 object-cover rounded-lg mb-4">
+                                <p class="text-gray-700 text-sm italic">在我们的网站上轻松找到您心仪的毛孩子</p>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div>
-                        <h3 class="text-white font-bold mb-3">关注我们</h3>
-                        <div class="flex space-x-4">
-                            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-colors duration-300">
-                                <i class="fa fa-twitter"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-colors duration-300">
-                                <i class="fa fa-instagram"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-colors duration-300">
-                                <i class="fa fa-youtube-play"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-colors duration-300">
-                                <i class="fa fa-discord"></i>
-                            </a>
+                    <!-- 步骤 2 -->
+                    <div class="flex flex-col md:flex-row-reverse items-center">
+                        <div class="md:w-1/2 md:pl-12 mb-8 md:mb-0 md:text-left">
+                            <h3 class="text-xl font-bold text-dark mb-3">提交申请</h3>
+                            <p class="text-gray-600">
+                                填写领养申请表，提供您的个人信息、居住环境和生活方式等资料，帮助我们评估您是否适合领养该宠物。
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-center w-16 h-16 bg-tertiary text-white rounded-full text-2xl font-bold mb-8 md:mb-0 z-10">
+                            2
+                        </div>
+                        <div class="md:w-1/2 md:pr-12">
+                            <div class="bg-white p-6 rounded-xl shadow-md">
+                                <img src="https://picsum.photos/id/180/600/400" alt="提交申请" class="w-full h-48 object-cover rounded-lg mb-4">
+                                <p class="text-gray-700 text-sm italic">填写详细的申请表，帮助我们了解您的情况</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 步骤 3 -->
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 md:pr-12 mb-8 md:mb-0 md:text-right">
+                            <h3 class="text-xl font-bold text-dark mb-3">面谈与家访</h3>
+                            <p class="text-gray-600">
+                                我们会安排与您的面谈，进一步了解您的需求和期望，并可能进行家访，确保您的居住环境适合宠物生活。
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-center w-16 h-16 bg-tertiary text-white rounded-full text-2xl font-bold mb-8 md:mb-0 z-10">
+                            3
+                        </div>
+                        <div class="md:w-1/2 md:pl-12">
+                            <div class="bg-white p-6 rounded-xl shadow-md">
+                                <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/11846e23f65d4dbf99dcc5ce4269b672~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370128&amp;x-signature=cX%2FTW4zNffWBLFkejrCtlvrYkcM%3D" alt="面谈与家访" class="w-full h-48 object-cover rounded-lg mb-4">
+                                <p class="text-gray-700 text-sm italic">我们会确保您的家庭环境适合宠物生活</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 步骤 4 -->
+                    <div class="flex flex-col md:flex-row-reverse items-center">
+                        <div class="md:w-1/2 md:pl-12 mb-8 md:mb-0 md:text-left">
+                            <h3 class="text-xl font-bold text-dark mb-3">签约与接领</h3>
+                            <p class="text-gray-600">
+                                如果申请通过，您将签署领养协议并支付少量领养费用（用于宠物医疗和护理），然后就可以将您的新伙伴带回家了。
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-center w-16 h-16 bg-tertiary text-white rounded-full text-2xl font-bold mb-8 md:mb-0 z-10">
+                            4
+                        </div>
+                        <div class="md:w-1/2 md:pr-12">
+                            <div class="bg-white p-6 rounded-xl shadow-md">
+                                <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/e50c0f208ae74b84a82ff7e9f71c3226~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370100&amp;x-signature=ph0z3J%2FJOHJAkUm0aWZoe3ZCW5U%3D" alt="签约与接领" class="w-full h-48 object-cover rounded-lg mb-4">
+                                <p class="text-gray-700 text-sm italic">签署领养协议，开启幸福生活</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="border-t border-white/10 mt-10 pt-6 text-center text-gray-500 text-sm">
-                <p>&copy; 2025 星梦应援站. 保留所有权利.</p>
+            <!-- 开始领养按钮 -->
+            <div class="text-center mt-16">
+                <a href="#pets" class="btn-primary">
+                    <i class="fa fa-heart mr-2"></i> 开始领养之旅
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 领养者反馈 -->
+    <section id="stories" class="section-padding bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title">成功故事</h2>
+            <p class="section-subtitle">
+                每一个领养故事都是独特的。看看这些宠物如何在新家庭中幸福生活，以及领养如何改变了他们的主人的生活。
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 故事卡片 1 -->
+                <div class="bg-light rounded-xl overflow-hidden shadow-md card-hover">
+                    <div class="relative">
+                        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/e6020c0b1a0e4b2290e541fffeed58c9~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751369976&amp;x-signature=xQwNVxJJCsGFQbCZch%2FVnGZ%2BjxY%3D" alt="领养故事照片" class="w-full h-64 object-cover">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/a87728932fb6447a9e4676c638e433ea~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751369953&amp;x-signature=ld0XWo2fVXR3sdJzeU2hDBaWbgk%3D" alt="领养者照片" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold text-dark">李先生和小金</h4>
+                                <p class="text-sm text-gray-500">领养于 2023年5月</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-4">
+                            "领养小金是我做过的最好的决定之一。他不仅给我的生活带来了无尽的欢乐，还让我每天都有了运动的动力。他是如此的友善和聪明，已经成为了家庭中不可或缺的一员。"
+                        </p>
+                        <div class="flex items-center text-yellow-400">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <span class="ml-2 text-gray-600 text-sm">5.0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 故事卡片 2 -->
+                <div class="bg-light rounded-xl overflow-hidden shadow-md card-hover">
+                    <div class="relative">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/84f0fd0d3d1946aaa7f0714274fe8c8f~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370031&amp;x-signature=GGQVQWvc2C%2Fuwthc9h8WWEDq%2BXo%3D" alt="领养故事照片" class="w-full h-64 object-cover">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <img src="https://picsum.photos/id/65/100/100" alt="领养者照片" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold text-dark">王女士和阿橘</h4>
+                                <p class="text-sm text-gray-500">领养于 2023年8月</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-4">
+                            "作为一个独居的上班族，阿橘给我的生活带来了很多温暖。每天下班回家，他都会在门口等我，让我不再感到孤单。他的性格很温顺，非常适合我的生活方式。"
+                        </p>
+                        <div class="flex items-center text-yellow-400">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-half-o"></i>
+                            <span class="ml-2 text-gray-600 text-sm">4.5</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 故事卡片 3 -->
+                <div class="bg-light rounded-xl overflow-hidden shadow-md card-hover">
+                    <div class="relative">
+                        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/42fb62f728d94484bf0177ce36498d2a~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370075&amp;x-signature=iSP6GpUuYR6KUwGYIV9mB53NZyY%3D" alt="领养故事照片" class="w-full h-64 object-cover">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <img src="https://picsum.photos/id/66/100/100" alt="领养者照片" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold text-dark">张先生一家和拉拉</h4>
+                                <p class="text-sm text-gray-500">领养于 2023年10月</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-4">
+                            "拉拉是我们家的开心果，孩子们都非常喜欢他。他很有耐心，对孩子们非常友好，成为了孩子们最好的伙伴。领养过程很顺利，平台的工作人员给了我们很多有用的建议。"
+                        </p>
+                        <div class="flex items-center text-yellow-400">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <span class="ml-2 text-gray-600 text-sm">5.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 分享故事按钮 -->
+            <div class="text-center mt-12">
+                <a href="#" class="btn-secondary">
+                    <i class="fa fa-share-alt mr-2"></i> 分享你的故事
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 数据统计 -->
+    <section class="py-16 bg-tertiary/10">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-tertiary mb-2" id="counter-pets">500+</div>
+                    <p class="text-gray-700">成功领养的宠物</p>
+                </div>
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-tertiary mb-2" id="counter-families">300+</div>
+                    <p class="text-gray-700">幸福的领养家庭</p>
+                </div>
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-tertiary mb-2" id="counter-volunteers">100+</div>
+                    <p class="text-gray-700">爱心志愿者</p>
+                </div>
+                <div class="p-6">
+                    <div class="text-4xl font-bold text-tertiary mb-2" id="counter-donations">¥200,000+</div>
+                    <p class="text-gray-700">爱心捐款</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 地图定位模块 -->
+    <section id="locations" class="section-padding bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title">领养地点</h2>
+            <p class="section-subtitle">
+                查找附近的领养中心和志愿者活动地点，我们的团队随时准备帮助您找到理想的伴侣。
+            </p>
+            
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="lg:w-1/3">
+                    <div class="bg-light rounded-xl p-6 shadow-md h-full">
+                        <h3 class="text-xl font-bold text-dark mb-4">选择城市</h3>
+                        <div class="mb-6">
+                            <input type="text" placeholder="输入城市名称" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tertiary/50 focus:border-tertiary">
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-dark mb-4">附近的领养中心</h3>
+                        <div class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                            <!-- 领养中心 1 -->
+                            <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                                <h4 class="font-bold text-dark mb-1">爱宠之家北京中心</h4>
+                                <p class="text-gray-600 text-sm mb-2">北京市朝阳区建国路88号</p>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fa fa-phone mr-2"></i> 010-12345678
+                                    <span class="mx-2">|</span>
+                                    <i class="fa fa-clock-o mr-2"></i> 周一至周日 10:00-18:00
+                                </div>
+                            </div>
+                            
+                            <!-- 领养中心 2 -->
+                            <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                                <h4 class="font-bold text-dark mb-1">爱宠之家上海中心</h4>
+                                <p class="text-gray-600 text-sm mb-2">上海市徐汇区淮海中路1200号</p>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fa fa-phone mr-2"></i> 021-23456789
+                                    <span class="mx-2">|</span>
+                                    <i class="fa fa-clock-o mr-2"></i> 周一至周日 10:00-18:00
+                                </div>
+                            </div>
+                            
+                            <!-- 领养中心 3 -->
+                            <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                                <h4 class="font-bold text-dark mb-1">爱宠之家广州中心</h4>
+                                <p class="text-gray-600 text-sm mb-2">广州市天河区天河路385号</p>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fa fa-phone mr-2"></i> 020-34567890
+                                    <span class="mx-2">|</span>
+                                    <i class="fa fa-clock-o mr-2"></i> 周一至周日 10:00-18:00
+                                </div>
+                            </div>
+                            
+                            <!-- 领养中心 4 -->
+                            <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                                <h4 class="font-bold text-dark mb-1">爱宠之家深圳中心</h4>
+                                <p class="text-gray-600 text-sm mb-2">深圳市南山区科技园南区8栋</p>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i class="fa fa-phone mr-2"></i> 0755-45678901
+                                    <span class="mx-2">|</span>
+                                    <i class="fa fa-clock-o mr-2"></i> 周一至周日 10:00-18:00
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:w-2/3">
+                    <div class="bg-light rounded-xl overflow-hidden shadow-md h-[500px] relative">
+                        <!-- 地图占位 -->
+                        <div class="w-full h-full bg-primary/20 flex items-center justify-center">
+                            <div class="text-center">
+                                <i class="fa fa-map-marker text-5xl text-tertiary mb-4"></i>
+                                <p class="text-gray-600">地图将在这里显示</p>
+                                <p class="text-gray-500 text-sm mt-2">选择城市后，将显示附近的领养中心位置</p>
+                            </div>
+                        </div>
+                        
+                        <!-- 地图标记示例 -->
+                        <div class="absolute top-1/4 left-1/3 transform -translate-x-1/2 -translate-y-1/2">
+                            <div class="bg-tertiary text-white text-xs font-bold py-1 px-2 rounded shadow-md">
+                                北京中心
+                            </div>
+                            <div class="w-4 h-4 bg-tertiary rounded-full mt-1 mx-auto relative">
+                                <div class="absolute inset-0 bg-white rounded-full animate-ping"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute top-1/2 left-2/3 transform -translate-x-1/2 -translate-y-1/2">
+                            <div class="bg-tertiary text-white text-xs font-bold py-1 px-2 rounded shadow-md">
+                                上海中心
+                            </div>
+                            <div class="w-4 h-4 bg-tertiary rounded-full mt-1 mx-auto relative">
+                                <div class="absolute inset-0 bg-white rounded-full animate-ping"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute bottom-1/4 right-1/3 transform -translate-x-1/2 -translate-y-1/2">
+                            <div class="bg-tertiary text-white text-xs font-bold py-1 px-2 rounded shadow-md">
+                                广州中心
+                            </div>
+                            <div class="w-4 h-4 bg-tertiary rounded-full mt-1 mx-auto relative">
+                                <div class="absolute inset-0 bg-white rounded-full animate-ping"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 志愿者招募与捐助 -->
+    <section id="volunteer" class="section-padding bg-gradient-to-br from-tertiary/20 to-primary/30">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title">加入我们</h2>
+            <p class="section-subtitle">
+                除了领养，您还可以通过其他方式帮助这些可爱的生命。无论是成为志愿者还是捐款，每一份爱心都能改变它们的命运。
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- 志愿者招募 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
+                    <div class="relative">
+                        <img src="https://picsum.photos/id/1060/600/400" alt="志愿者活动" class="w-full h-64 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                            <div class="p-6">
+                                <h3 class="text-2xl font-bold text-white mb-2">成为志愿者</h3>
+                                <p class="text-white/80">帮助照顾和关爱这些需要帮助的宠物</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-4">
+                            作为志愿者，您可以参与到宠物照顾、活动组织、领养宣传等工作中。无论您是有经验的宠物爱好者还是新手，我们都欢迎您的加入。
+                        </p>
+                        <ul class="space-y-2 mb-6">
+                            <li class="flex items-start">
+                                <i class="fa fa-check-circle text-tertiary mt-1 mr-2"></i>
+                                <span class="text-gray-700">灵活的志愿者时间安排</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-check-circle text-tertiary mt-1 mr-2"></i>
+                                <span class="text-gray-700">专业的培训和指导</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-check-circle text-tertiary mt-1 mr-2"></i>
+                                <span class="text-gray-700">与志同道合的人一起工作</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-check-circle text-tertiary mt-1 mr-2"></i>
+                                <span class="text-gray-700">获得志愿者证书和推荐信</span>
+                            </li>
+                        </ul>
+                        <a href="#" class="block w-full text-center py-3 px-4 bg-tertiary hover:bg-tertiary/90 text-white font-medium rounded-lg transition-colors">
+                            立即报名
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 捐款支持 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
+                    <div class="relative">
+                        <img src="https://picsum.photos/id/1062/600/400" alt="捐款支持" class="w-full h-64 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                            <div class="p-6">
+                                <h3 class="text-2xl font-bold text-white mb-2">捐款支持</h3>
+                                <p class="text-white/80">您的捐款将用于宠物医疗和生活费用</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-4">
+                            您的捐款将直接用于宠物的食物、医疗和生活环境改善。每一笔捐款都能帮助我们为更多的流浪动物提供帮助。
+                        </p>
+                        
+                        <!-- 捐款进度 -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium text-dark">本月目标：¥50,000</span>
+                                <span class="font-medium text-tertiary">已筹：¥32,500 (65%)</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-tertiary h-3 rounded-full" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-4 mb-6">
+                            <button class="py-3 px-4 bg-primary hover:bg-primary/90 text-tertiary font-medium rounded-lg transition-colors">
+                                ¥50
+                            </button>
+                            <button class="py-3 px-4 bg-primary hover:bg-primary/90 text-tertiary font-medium rounded-lg transition-colors">
+                                ¥100
+                            </button>
+                            <button class="py-3 px-4 bg-primary hover:bg-primary/90 text-tertiary font-medium rounded-lg transition-colors">
+                                ¥200
+                            </button>
+                        </div>
+                        
+                        <a href="#" class="block w-full text-center py-3 px-4 bg-tertiary hover:bg-tertiary/90 text-white font-medium rounded-lg transition-colors">
+                            其他金额
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 订阅通讯 -->
+    <section class="py-16 bg-tertiary/10">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-3xl font-bold text-dark mb-4">订阅我们的通讯</h2>
+                <p class="text-gray-600 mb-8">
+                    获取最新的宠物领养信息、活动通知和养宠小贴士，成为我们社区的一员。
+                </p>
+                <form class="flex flex-col sm:flex-row gap-4">
+                    <input type="email" placeholder="输入您的邮箱地址" class="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tertiary/50 focus:border-tertiary">
+                    <button type="submit" class="btn-primary whitespace-nowrap">
+                        <i class="fa fa-paper-plane mr-2"></i> 立即订阅
+                    </button>
+                </form>
+                <p class="text-gray-500 text-sm mt-4">
+                    我们尊重您的隐私，不会向第三方分享您的信息。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center mb-6">
+                        <i class="fa fa-paw text-secondary text-3xl mr-2"></i>
+                        <span class="text-2xl font-bold">爱宠之家</span>
+                    </div>
+                    <p class="text-gray-400 mb-6">
+                        我们致力于为每一只流浪宠物找到温暖的家，同时帮助人们找到最适合的伴侣。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-secondary transition-colors">
+                            <i class="fa fa-weixin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-secondary transition-colors">
+                            <i class="fa fa-weibo text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-secondary transition-colors">
+                            <i class="fa fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-secondary transition-colors">
+                            <i class="fa fa-youtube-play text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-6">快速链接</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#home" class="text-gray-400 hover:text-secondary transition-colors">首页</a></li>
+                        <li><a href="#pets" class="text-gray-400 hover:text-secondary transition-colors">可领养宠物</a></li>
+                        <li><a href="#process" class="text-gray-400 hover:text-secondary transition-colors">领养流程</a></li>
+                        <li><a href="#stories" class="text-gray-400 hover:text-secondary transition-colors">成功故事</a></li>
+                        <li><a href="#locations" class="text-gray-400 hover:text-secondary transition-colors">领养地点</a></li>
+                        <li><a href="#volunteer" class="text-gray-400 hover:text-secondary transition-colors">加入我们</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-6">联系方式</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fa fa-map-marker text-secondary mt-1 mr-3"></i>
+                            <span class="text-gray-400">北京市朝阳区建国路88号爱宠大厦</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-phone text-secondary mt-1 mr-3"></i>
+                            <span class="text-gray-400">010-12345678</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-envelope text-secondary mt-1 mr-3"></i>
+                            <span class="text-gray-400">contact@petlove.com</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-clock-o text-secondary mt-1 mr-3"></i>
+                            <span class="text-gray-400">周一至周日 10:00-18:00</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-6">下载我们的应用</h3>
+                    <p class="text-gray-400 mb-4">
+                        随时随地浏览可领养宠物，提交申请，获取最新动态。
+                    </p>
+                    <div class="flex flex-col space-y-3">
+                        <a href="#" class="bg-gray-800 hover:bg-gray-700 transition-colors p-3 rounded-lg flex items-center">
+                            <i class="fa fa-apple text-2xl mr-3"></i>
+                            <div>
+                                <div class="text-xs">下载</div>
+                                <div class="font-medium">App Store</div>
+                            </div>
+                        </a>
+                        <a href="#" class="bg-gray-800 hover:bg-gray-700 transition-colors p-3 rounded-lg flex items-center">
+                            <i class="fa fa-android text-2xl mr-3"></i>
+                            <div>
+                                <div class="text-xs">下载</div>
+                                <div class="font-medium">Google Play</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-500 text-sm mb-4 md:mb-0">
+                        © 2025 爱宠之家 版权所有 | 京ICP备12345678号
+                    </p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-500 hover:text-gray-400 text-sm">隐私政策</a>
+                        <a href="#" class="text-gray-500 hover:text-gray-400 text-sm">使用条款</a>
+                        <a href="#" class="text-gray-500 hover:text-gray-400 text-sm">Cookie政策</a>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
 
+    <!-- 回到顶部按钮 -->
+    <button id="back-to-top" class="fixed bottom-6 right-6 bg-tertiary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-tertiary/90">
+        <i class="fa fa-arrow-up"></i>
+    </button>
+
+    <!-- JavaScript -->
     <script>
-        // 初始化AOS动画库
-        document.addEventListener('DOMContentLoaded', function() {
-            AOS.init({
-                duration: 800,
-                easing: 'ease-in-out',
-                once: true
+        // 导航栏滚动效果
+        const navbar = document.getElementById('navbar');
+        const backToTop = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 100) {
+                navbar.classList.add('bg-white', 'shadow-md');
+                navbar.classList.remove('py-4');
+                navbar.classList.add('py-2');
+                
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                navbar.classList.remove('bg-white', 'shadow-md');
+                navbar.classList.remove('py-2');
+                navbar.classList.add('py-4');
+                
+                backToTop.classList.add('opacity-0', 'invisible');
+                backToTop.classList.remove('opacity-100', 'visible');
+            }
+        });
+        
+        // 移动端菜单
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        menuToggle.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                menuToggle.innerHTML = '<i class="fa fa-bars"></i>';
+            } else {
+                menuToggle.innerHTML = '<i class="fa fa-times"></i>';
+            }
+        });
+        
+        // 回到顶部
+        backToTop.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
             });
-            
-            // 移动端菜单切换
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            
-            mobileMenuButton.addEventListener('click', function() {
-                mobileMenu.classList.toggle('hidden');
-            });
-            
-            // 平滑滚动
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    const targetId = this.getAttribute('href');
-                    if (targetId === '#') return;
-                    
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                        
-                        // 如果是移动端，点击后关闭菜单
-                        if (window.innerWidth < 768) {
-                            mobileMenu.classList.add('hidden');
-                        }
-                    }
-                });
-            });
-            
-            // 导航栏滚动效果
-            window.addEventListener('scroll', function() {
-                const nav = document.querySelector('nav');
-                if (window.scrollY > 50) {
-                    nav.classList.add('shadow-lg');
-                } else {
-                    nav.classList.remove('shadow-lg');
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                // 关闭移动菜单
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    menuToggle.innerHTML = '<i class="fa fa-bars"></i>';
+                }
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
                 }
             });
         });
+        
+        // 数字动画
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            if (!obj) return;
+            
+            let startTime = null;
+            const step = timestamp => {
+                if (!startTime) startTime = timestamp;
+                const progress = Math.min((timestamp - startTime) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                
+                if (id === 'counter-donations') {
+                    obj.innerHTML = '¥' + value.toLocaleString() + '+';
+                } else {
+                    obj.innerHTML = value + '+';
+                }
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+        
+        // 检查元素是否在视口中
+        function isInViewport(element) {
+            const rect = element.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+        
+        // 滚动时检查并触发动画
+        let animationTriggered = false;
+        window.addEventListener('scroll', function() {
+            if (!animationTriggered && isInViewport(document.getElementById('counter-pets'))) {
+                animationTriggered = true;
+                animateValue('counter-pets', 0, 500, 2000);
+                animateValue('counter-families', 0, 300, 2000);
+                animateValue('counter-volunteers', 0, 100, 2000);
+                animateValue('counter-donations', 0, 200000, 2000);
+            }
+        });
     </script>
-</body>
-</html>
+
+
+    </body></html>
