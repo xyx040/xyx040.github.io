@@ -1,991 +1,1159 @@
-<!DOCTYPE html>
 <html lang="zh-CN"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>爱心宠物领养平台 - 给它们一个温暖的家</title>
+    <title> Scarlet - 二次元偶像应援站 </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
     
+    <!-- 配置Tailwind自定义颜色和字体 -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#F5E8C7',      // 米黄色
-                        secondary: '#FFA07A',    // 浅橙色
-                        tertiary: '#A67C52',     // 浅棕色
-                        light: '#FAF6F0',        // 更浅的米黄色
-                        dark: '#5D4037',         // 深棕色
+                        primary: '#FF3E6C', // 亮粉色
+                        secondary: '#42B8DD', // 蓝色
+                        accent: '#FFD166', // 黄色
+                        dark: '#2A2A45', // 深色
+                        light: '#FFF5F8', // 浅色
                     },
                     fontFamily: {
-                        inter: ['Inter', 'sans-serif'],
+                        sans: ['Poppins', 'sans-serif'],
+                        display: ['Montserrat', 'sans-serif'],
                     },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'bounce-slow': 'bounce 4s infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-up': 'slideUp 1s ease-out forwards',
+                        'hit': 'hit 0.2s ease-in-out',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'scale-in': 'scaleIn 0.3s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(100vh) opacity(0)' },
+                            '100%': { transform: 'translateY(0) opacity(1)' },
+                        },
+                        hit: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.2)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: 0 },
+                            '100%': { opacity: 1 },
+                        },
+                        scaleIn: {
+                            '0%': { transform: 'scale(0.9)', opacity: 0 },
+                            '100%': { transform: 'scale(1)', opacity: 1 },
+                        }
+                    }
                 }
             }
         }
     </script>
     
+    <!-- 自定义工具类 -->
     <style type="text/tailwindcss">
         @layer utilities {
             .content-auto {
                 content-visibility: auto;
             }
             .text-shadow {
-                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
             }
-            .card-hover {
-                transition: all 0.3s ease;
+            .text-shadow-lg {
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
             }
-            .card-hover:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            .bg-gradient-idol {
+                background: linear-gradient(135deg, #FF3E6C 0%, #42B8DD 100%);
             }
-            .btn-primary {
-                @apply bg-secondary hover:bg-secondary/90 text-white font-medium py-3 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1;
+            .backdrop-blur {
+                backdrop-filter: blur(8px);
             }
-            .btn-secondary {
-                @apply bg-white hover:bg-gray-50 text-tertiary border border-tertiary font-medium py-3 px-6 rounded-full transition-all duration-300 shadow-sm hover:shadow-md;
+            .answer-active {
+                @apply bg-primary text-white border-primary;
             }
-            .section-padding {
-                @apply py-16 md:py-24;
+            .answer-correct {
+                @apply bg-green-500 text-white border-green-500;
             }
-            .section-title {
-                @apply text-[clamp(2rem,5vw,3rem)] font-bold text-dark mb-4 text-center;
-            }
-            .section-subtitle {
-                @apply text-[clamp(1rem,2vw,1.25rem)] text-gray-600 max-w-3xl mx-auto text-center mb-12;
+            .answer-incorrect {
+                @apply bg-red-500 text-white border-red-500;
             }
         }
     </style>
+    
+    <!-- 导入字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Poppins:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
 </head>
-<body class="font-inter bg-light text-gray-800">
+
+<body class="bg-light text-dark font-sans overflow-x-hidden">
     <!-- 导航栏 -->
-    <header id="navbar" class="fixed w-full z-50 transition-all duration-300">
-        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-            <a href="#" class="flex items-center">
-                <i class="fa fa-paw text-tertiary text-3xl mr-2"></i>
-                <span class="text-2xl font-bold text-dark">爱宠之家</span>
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="#" class="flex items-center space-x-2">
+                <span class="text-primary text-2xl"><i class="fa fa-heart"></i></span>
+                <span class="font-display font-bold text-xl text-white text-shadow">Scarlet应援站</span>
             </a>
             
             <!-- 桌面导航 -->
-            <nav class="hidden md:flex space-x-8">
-                <a href="#home" class="font-medium text-dark hover:text-tertiary transition-colors">首页</a>
-                <a href="#pets" class="font-medium text-dark hover:text-tertiary transition-colors">可领养宠物</a>
-                <a href="#process" class="font-medium text-dark hover:text-tertiary transition-colors">领养流程</a>
-                <a href="#stories" class="font-medium text-dark hover:text-tertiary transition-colors">成功故事</a>
-                <a href="#locations" class="font-medium text-dark hover:text-tertiary transition-colors">领养地点</a>
-                <a href="#volunteer" class="font-medium text-dark hover:text-tertiary transition-colors">加入我们</a>
-            </nav>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#about" class="text-white hover:text-accent transition-colors font-medium">关于偶像</a>
+                <a href="#works" class="text-white hover:text-accent transition-colors font-medium">作品</a>
+                <a href="#gallery" class="text-white hover:text-accent transition-colors font-medium">图集</a>
+                <a href="#quiz" class="text-white hover:text-accent transition-colors font-medium">趣味测试</a>
+                <a href="#fanwall" class="text-white hover:text-accent transition-colors font-medium">应援墙</a>
+            </div>
             
             <!-- 移动端菜单按钮 -->
-            <button id="menu-toggle" class="md:hidden text-dark text-2xl">
+            <button id="menuBtn" class="md:hidden text-white text-2xl">
                 <i class="fa fa-bars"></i>
             </button>
-            
-            <!-- 立即领养按钮 -->
-            <a href="#pets" class="hidden md:block btn-primary">
-                立即领养
-            </a>
         </div>
         
-        <!-- 移动端导航菜单 -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg absolute w-full">
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="md:hidden bg-dark/95 backdrop-blur hidden">
             <div class="container mx-auto px-4 py-4 flex flex-col space-y-4">
-                <a href="#home" class="font-medium text-dark hover:text-tertiary transition-colors py-2">首页</a>
-                <a href="#pets" class="font-medium text-dark hover:text-tertiary transition-colors py-2">可领养宠物</a>
-                <a href="#process" class="font-medium text-dark hover:text-tertiary transition-colors py-2">领养流程</a>
-                <a href="#stories" class="font-medium text-dark hover:text-tertiary transition-colors py-2">成功故事</a>
-                <a href="#locations" class="font-medium text-dark hover:text-tertiary transition-colors py-2">领养地点</a>
-                <a href="#volunteer" class="font-medium text-dark hover:text-tertiary transition-colors py-2">加入我们</a>
-                <a href="#pets" class="btn-primary text-center">
-                    立即领养
+                <a href="#about" class="text-white hover:text-accent transition-colors py-2 border-b border-gray-700">关于偶像</a>
+                <a href="#works" class="text-white hover:text-accent transition-colors py-2 border-b border-gray-700">作品</a>
+                <a href="#gallery" class="text-white hover:text-accent transition-colors py-2 border-b border-gray-700">图集</a>
+                <a href="#quiz" class="text-white hover:text-accent transition-colors py-2 border-b border-gray-700">趣味测试</a>
+                <a href="#fanwall" class="text-white hover:text-accent transition-colors py-2">应援墙</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <header class="relative min-h-screen flex items-center overflow-hidden">
+        <!-- 背景装饰 -->
+        <div class="absolute inset-0 bg-gradient-to-br from-primary/90 to-secondary/90 z-0"></div>
+        <div class="absolute top-0 left-0 w-full h-full bg-[url('https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/8266b7b7f0d74d0591cbb58893bbd2bd.png~tplv-a9rns2rl98-24:720:720.png?rk3s=1fb89129&amp;x-expires=1758598267&amp;x-signature=iEQSxPbi6xw5eYMKwA2oWMvYlz0%3D')] bg-cover bg-center opacity-20 z-0"></div>
+        
+        <!-- 气泡装饰 -->
+        <div id="bubbles" class="absolute inset-0 z-0 overflow-hidden"></div>
+        
+        <div class="container mx-auto px-4 z-10 pt-16">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 text-center md:text-left mb-10 md:mb-0">
+                    <h1 class="font-display font-bold text-[clamp(2.5rem,6vw,4rem)] text-white leading-tight text-shadow-lg mb-4 animate-float">
+                        欢迎来到<br>Scarlet的世界
+                    </h1>
+                    <p class="text-white/90 text-[clamp(1rem,2vw,1.25rem)] mb-8 max-w-lg mx-auto md:mx-0">
+                        二次元超人气偶像Scarlet的官方应援站，这里有最新资讯、精美图集和有趣的互动测试，与其他粉丝一起为Scarlet应援吧！
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#about" class="bg-accent hover:bg-accent/90 text-dark font-semibold px-8 py-3 rounded-full transition-all transform hover:scale-105 shadow-lg">
+                            了解更多
+                        </a>
+                        <a href="#quiz" class="bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold px-8 py-3 rounded-full transition-all transform hover:scale-105">
+                            开始测试 <i class="fa fa-question-circle ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative w-full max-w-md">
+                        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/9e40aa6f701a46929fd13b8886ab3218~tplv-a9rns2rl98-image.image?rcl=202509221535493CCC5B23665EFF5F0120&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1759131349&amp;x-signature=wlfZufJHDc6uUyRsVBYlnPTAk%2BM%3D" alt="二次元偶像Scarlet" class="w-full h-auto rounded-2xl shadow-2xl animate-float" loading="lazy">
+                        <div class="absolute -bottom-5 -right-5 bg-primary text-white text-xl font-bold px-6 py-3 rounded-full shadow-lg animate-pulse-slow">
+                            #1 Idol
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 向下滚动指示 -->
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white animate-bounce-slow">
+                <a href="#about" class="flex flex-col items-center">
+                    <span class="mb-2 font-medium">向下滚动</span>
+                    <i class="fa fa-chevron-down"></i>
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- 英雄区域 -->
-    <section id="home" class="pt-28 pb-16 md:pt-40 md:pb-24 bg-gradient-to-br from-primary/30 to-light relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-full h-full bg-[url('https://picsum.photos/id/1025/1200/800')] bg-cover bg-center opacity-10"></div>
-        <div class="container mx-auto px-4 relative z-10">
-            <div class="flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 mb-10 md:mb-0">
-                    <h1 class="text-[clamp(2.5rem,5vw,4rem)] font-bold text-dark leading-tight text-shadow mb-6">
-                        给它们一个<br>温暖的家
-                    </h1>
-                    <p class="text-[clamp(1rem,2vw,1.25rem)] text-gray-700 mb-8 max-w-lg">
-                        每一个生命都值得被爱。在爱宠之家，我们致力于为流浪的猫咪和狗狗寻找永久的家，同时帮助您找到最适合的伴侣。
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="#pets" class="btn-primary text-center">
-                            <i class="fa fa-heart mr-2"></i> 寻找我的毛孩子
-                        </a>
-                        <a href="#process" class="btn-secondary text-center">
-                            <i class="fa fa-info-circle mr-2"></i> 了解领养流程
-                        </a>
-                    </div>
-                    <div class="flex items-center mt-10 space-x-6">
-                        <div class="flex -space-x-2">
-                            <img src="https://picsum.photos/id/64/100/100" alt="领养人照片" class="w-10 h-10 rounded-full border-2 border-white">
-                            <img src="https://picsum.photos/id/65/100/100" alt="领养人照片" class="w-10 h-10 rounded-full border-2 border-white">
-                            <img src="https://picsum.photos/id/66/100/100" alt="领养人照片" class="w-10 h-10 rounded-full border-2 border-white">
+    <!-- 关于偶像 -->
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="font-display font-bold text-[clamp(1.8rem,4vw,2.5rem)] text-dark mb-4">关于 Scarlet</h2>
+                <div class="w-24 h-1 bg-primary mx-auto"></div>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <div class="lg:w-1/2">
+                    <div class="relative">
+                        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/c60eacc5c30a4ff6ad560582fc0192da~tplv-a9rns2rl98-image.image?rcl=2025091614582553E6A7588095000289F2&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1758610705&amp;x-signature=%2Bf%2FALvylYcb5gApti5jB5f4W4X4%3D" alt="Scarlet的舞台照" class="w-full h-auto rounded-xl shadow-xl">
+                        <div class="absolute -top-4 -left-4 bg-accent text-dark p-4 rounded-lg shadow-lg">
+                            <p class="font-bold">出道日期</p>
+                            <p>2023年3月14日</p>
                         </div>
-                        <p class="text-sm text-gray-600">
-                            <span class="font-semibold text-tertiary">500+</span> 宠物已找到新家
-                        </p>
                     </div>
                 </div>
-                <div class="md:w-1/2 relative">
-                    <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl transform md:rotate-2 hover:rotate-0 transition-transform duration-500">
-                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/70cb610edcc8459481e000c7d1f1dd62~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370349&amp;x-signature=jmJazsyE0LgkbvzhpxWgPMQ6Sws%3D" alt="等待领养的宠物" class="w-full h-auto">
-                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
-                            <p class="text-white font-medium text-lg">每一只宠物都值得被温柔以待</p>
+                
+                <div class="lg:w-1/2">
+                    <h3 class="font-display font-bold text-2xl mb-4 text-primary">Scarlet 档案</h3>
+                    <p class="text-gray-700 mb-6 leading-relaxed">
+                        Scarlet是一位充满活力的二次元偶像，以其独特的红发造型和甜美又不失个性的嗓音深受粉丝喜爱。她擅长流行舞曲和抒情歌曲，舞台表现力极强，每次演出都能点燃全场气氛。
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-light p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                            <h4 class="font-bold text-dark mb-2 flex items-center">
+                                <i class="fa fa-music text-primary mr-2"></i> 代表作品
+                            </h4>
+                            <p class="text-gray-600">《心跳节拍》、《彩虹旋律》、《星之碎片》</p>
+                        </div>
+                        <div class="bg-light p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                            <h4 class="font-bold text-dark mb-2 flex items-center">
+                                <i class="fa fa-trophy text-primary mr-2"></i> 成就
+                            </h4>
+                            <p class="text-gray-600">连续3个月蝉联动漫音乐榜冠军</p>
+                        </div>
+                        <div class="bg-light p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                            <h4 class="font-bold text-dark mb-2 flex items-center">
+                                <i class="fa fa-heart text-primary mr-2"></i> 粉丝名
+                            </h4>
+                            <p class="text-gray-600">Scarlets (斯卡莱特们)</p>
+                        </div>
+                        <div class="bg-light p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                            <h4 class="font-bold text-dark mb-2 flex items-center">
+                                <i class="fa fa-calendar text-primary mr-2"></i> 生日
+                            </h4>
+                            <p class="text-gray-600">6月18日</p>
                         </div>
                     </div>
-                    <div class="absolute -bottom-6 -left-6 w-40 h-40 bg-secondary/30 rounded-full blur-2xl -z-10"></div>
-                    <div class="absolute -top-6 -right-6 w-40 h-40 bg-tertiary/20 rounded-full blur-2xl -z-10"></div>
+                    
+                    <div class="flex space-x-4">
+                        <a href="#" class="bg-primary hover:bg-primary/90 text-white p-3 rounded-full transition-all transform hover:scale-110">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                        <a href="#" class="bg-[#FF0000] hover:bg-[#CC0000] text-white p-3 rounded-full transition-all transform hover:scale-110">
+                            <i class="fa fa-youtube-play"></i>
+                        </a>
+                        <a href="#" class="bg-[#E1306C] hover:bg-[#C13584] text-white p-3 rounded-full transition-all transform hover:scale-110">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 可领养宠物展示区 -->
-    <section id="pets" class="section-padding bg-white">
+    <!-- 作品展示 -->
+    <section id="works" class="py-20 bg-gradient-to-b from-light to-white">
         <div class="container mx-auto px-4">
-            <h2 class="section-title">等待领养的毛孩子</h2>
-            <p class="section-subtitle">
-                浏览我们的可领养宠物列表，找到您的完美伴侣。每只宠物都经过健康检查和疫苗接种，期待着一个充满爱的家。
-            </p>
+            <div class="text-center mb-16">
+                <h2 class="font-display font-bold text-[clamp(1.8rem,4vw,2.5rem)] text-dark mb-4">Scarlet 作品</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">欣赏Scarlet的精彩音乐作品和MV，感受她的音乐魅力</p>
+                <div class="w-24 h-1 bg-primary mx-auto mt-4"></div>
+            </div>
             
-            <!-- 筛选器 -->
-            <div class="mb-10 bg-light rounded-xl p-6 shadow-sm">
-                <div class="flex flex-col md:flex-row gap-4">
-                    <div class="flex-1">
-                        <label class="block text-gray-700 font-medium mb-2">宠物类型</label>
-                        <select class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tertiary/50 focus:border-tertiary">
-                            <option value="">全部</option>
-                            <option value="dog">狗狗</option>
-                            <option value="cat">猫咪</option>
-                        </select>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 作品卡片1 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                    <div class="relative">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/22725cc896da451caf09dac4e8693d31~tplv-a9rns2rl98-image.image?rcl=20250916150951149E4533A57FEDF78F90&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1758611392&amp;x-signature=4OWlkoXXgI9g87Wv4VbpW0g3KOQ%3D" alt="心跳节拍 MV封面" class="w-full h-56 object-cover">
+                        <div class="absolute inset-0 bg-dark/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                            <button class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center transform hover:scale-110 transition-transform">
+                                <i class="fa fa-play text-xl"></i>
+                            </button>
+                        </div>
+                        <div class="absolute top-4 right-4 bg-accent text-dark px-3 py-1 rounded-full text-sm font-bold">
+                            热门
+                        </div>
                     </div>
-                    <div class="flex-1">
-                        <label class="block text-gray-700 font-medium mb-2">年龄</label>
-                        <select class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tertiary/50 focus:border-tertiary">
-                            <option value="">全部</option>
-                            <option value="baby">幼年</option>
-                            <option value="young">青年</option>
-                            <option value="adult">成年</option>
-                            <option value="senior">老年</option>
-                        </select>
+                    <div class="p-6">
+                        <h3 class="font-display font-bold text-xl mb-2">心跳节拍</h3>
+                        <p class="text-gray-600 mb-4">Scarlet的出道单曲，以轻快的节奏和充满活力的表演赢得了大量粉丝的喜爱。</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500 text-sm"><i class="fa fa-calendar mr-1"></i> 2023-03-14</span>
+                            <div class="flex items-center">
+                                <i class="fa fa-eye text-primary mr-1"></i>
+                                <span>1,245,321</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex-1">
-                        <label class="block text-gray-700 font-medium mb-2">性格</label>
-                        <select class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tertiary/50 focus:border-tertiary">
-                            <option value="">全部</option>
-                            <option value="playful">活泼好动</option>
-                            <option value="calm">安静温顺</option>
-                            <option value="friendly">友好亲人</option>
-                            <option value="independent">独立自主</option>
-                        </select>
+                </div>
+                
+                <!-- 作品卡片2 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                    <div class="relative">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/aeca6d4b15784666a327d6f606f5934a~tplv-a9rns2rl98-image.image?rcl=2025091615040609D5FCD0BFAC8B42387A&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1758611048&amp;x-signature=xWJZUNWJtXY0j0DJ%2BZ%2BnUTj14pI%3D" alt="彩虹旋律 MV封面" class="w-full h-56 object-cover">
+                        <div class="absolute inset-0 bg-dark/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                            <button class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center transform hover:scale-110 transition-transform">
+                                <i class="fa fa-play text-xl"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex items-end">
-                        <button class="w-full md:w-auto btn-primary">
-                            <i class="fa fa-search mr-2"></i> 筛选
+                    <div class="p-6">
+                        <h3 class="font-display font-bold text-xl mb-2">彩虹旋律</h3>
+                        <p class="text-gray-600 mb-4">一首充满希望和梦想的歌曲，展现了Scarlet温柔而坚定的一面。</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500 text-sm"><i class="fa fa-calendar mr-1"></i> 2023-06-18</span>
+                            <div class="flex items-center">
+                                <i class="fa fa-eye text-primary mr-1"></i>
+                                <span>987,654</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 作品卡片3 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                    <div class="relative">
+                        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/0c6849f02b274e8d8ad55bbf7405ba39~tplv-a9rns2rl98-image.image?rcl=2025091615102874561463F086FD9EDEBF&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1758611428&amp;x-signature=wAIuHih4gZZfq6tzzWRVeZkPseI%3D" alt="星之碎片 MV封面" class="w-full h-56 object-cover">
+                        <div class="absolute inset-0 bg-dark/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                            <button class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center transform hover:scale-110 transition-transform">
+                                <i class="fa fa-play text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display font-bold text-xl mb-2">星之碎片</h3>
+                        <p class="text-gray-600 mb-4">一首抒情歌曲，Scarlet用她清澈的嗓音唱出了对粉丝的感谢之情。</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500 text-sm"><i class="fa fa-calendar mr-1"></i> 2023-09-22</span>
+                            <div class="flex items-center">
+                                <i class="fa fa-eye text-primary mr-1"></i>
+                                <span>765,432</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="#" class="inline-block bg-dark hover:bg-dark/90 text-white font-semibold px-8 py-3 rounded-full transition-all transform hover:scale-105">
+                    查看更多作品 <i class="fa fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 图集 -->
+    <section id="gallery" class="py-20 bg-dark text-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="font-display font-bold text-[clamp(1.8rem,4vw,2.5rem)] mb-4">精美图集</h2>
+                <p class="text-gray-300 max-w-2xl mx-auto">收集Scarlet的舞台照、宣传照和插画作品</p>
+                <div class="w-24 h-1 bg-accent mx-auto mt-4"></div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="gallery-item overflow-hidden rounded-lg cursor-pointer group">
+                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/4135f0ffbe71472681fb9a44647a5583~tplv-a9rns2rl98-image.image?rcl=20250916151050AD9FF2A12A7E0C6445BF&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1758611450&amp;x-signature=k5ZUxIzY%2BdssTKYKZe0MEI2gKps%3D" alt="Scarlet舞台照1" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg cursor-pointer group">
+                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/0b497bcb584b4a80a3bc75b4e3c3bc53~tplv-a9rns2rl98-image.image?rcl=20250916151150B8671A3A46665383428D&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1758611511&amp;x-signature=SZOpa644EdkNsACXl4r3IJQ0UhQ%3D" alt="Scarlet舞台照2" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg cursor-pointer group">
+                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/c173e9e174be4d209f36bb9d9ac7e1ac~tplv-a9rns2rl98-image.image?rcl=20250916151129D4DCFEF789BF491AC0ED&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1758611489&amp;x-signature=5kdfq3ZZ3NrCq2%2Fo7kJ9hCH938M%3D" alt="Scarlet宣传照1" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg cursor-pointer group">
+                    <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/6a2d803bbbfb40429b8b706486ee7212~tplv-a9rns2rl98-image.image?rcl=20250916151141A6B34C866F2AAE17F7C0&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1758611501&amp;x-signature=S6sT1hX2R1HmVRd3inxTV8chO9s%3D" alt="Scarlet宣传照2" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg cursor-pointer group">
+                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/2921d4f1e935406ab3af46f495872dbc~tplv-a9rns2rl98-image.image?rcl=20250916151210F30C5ED111631B78D518&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1758611530&amp;x-signature=qNjSa3Ihj4DAtR8%2ByqPl2seKSzI%3D" alt="Scarlet插画1" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg cursor-pointer group">
+                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/3a71ca987c9d4cb7aabffdb444a52e97~tplv-a9rns2rl98-image.image?rcl=202509161513150764E3AF4A2A837C2150&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1758611596&amp;x-signature=NmfwXic%2FeS770j%2BfZWef5MKw0kE%3D" alt="Scarlet插画2" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg cursor-pointer group">
+                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/f4384931159c46b592da9ee6bf75552b~tplv-a9rns2rl98-image.image?rcl=2025091615133155D1DE6D5DCE2604695C&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1758611612&amp;x-signature=rJ9YYsdVbP8j%2BzZvMJ7QqErXwvM%3D" alt="Scarlet日常照1" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-lg cursor-pointer group">
+                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/351c88d0b0d644be82ca7e4298e9af97~tplv-a9rns2rl98-image.image?rcl=202509161513462CD392BD23D856865612&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1758611627&amp;x-signature=mqF%2FT8n9rRj%2F0%2Bg9okJ1vVfFUY8%3D" alt="Scarlet日常照2" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110">
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="#" class="inline-block bg-accent hover:bg-accent/90 text-dark font-semibold px-8 py-3 rounded-full transition-all transform hover:scale-105">
+                    浏览更多图片 <i class="fa fa-picture-o ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 趣味测试区域 -->
+    <section id="quiz" class="py-20 bg-gradient-to-br from-secondary/10 to-primary/10">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="font-display font-bold text-[clamp(1.8rem,4vw,2.5rem)] text-dark mb-4">Scarlet 趣味测试</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">测试你对Scarlet的了解程度，看看你是不是忠实粉丝！</p>
+                <div class="w-24 h-1 bg-primary mx-auto mt-4"></div>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="p-6 md:p-10">
+                    <div class="flex flex-col md:flex-row gap-10">
+                        <div class="md:w-1/3">
+                            <h3 class="font-display font-bold text-2xl mb-4 text-primary">Scarlet粉丝测试</h3>
+                            <p class="text-gray-600 mb-6">
+                                回答关于Scarlet的问题，测试你对她的了解程度。完成后可以获得专属粉丝称号哦！
+                            </p>
+                            
+                            <div class="bg-light p-5 rounded-lg mb-6">
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="font-bold">测试进度</span>
+                                    <span id="quiz-progress" class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">1/5</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 mb-3">
+                                    <div id="progress-bar" class="bg-primary h-2.5 rounded-full" style="width: 20%"></div>
+                                </div>
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="font-bold">当前得分</span>
+                                    <span id="quiz-score" class="bg-accent/10 text-dark px-3 py-1 rounded-full text-sm">0</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold">剩余时间</span>
+                                    <span id="quiz-timer" class="bg-dark/10 text-dark px-3 py-1 rounded-full text-sm">00:30</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-light p-5 rounded-lg mb-6">
+                                <h4 class="font-bold mb-3">测试说明</h4>
+                                <ul class="text-gray-600 list-disc pl-5 space-y-1 text-sm">
+                                    <li>共5道关于Scarlet的问题</li>
+                                    <li>每道题有30秒答题时间</li>
+                                    <li>选择正确答案可获得20分</li>
+                                    <li>完成后将根据得分获得粉丝称号</li>
+                                </ul>
+                            </div>
+                            
+                            <button id="start-quiz" class="w-full bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-lg transition-all transform hover:scale-105 mb-4">
+                                开始测试
+                            </button>
+                            
+                            <button id="reset-quiz" class="w-full bg-dark/10 hover:bg-dark/20 text-dark font-semibold px-6 py-3 rounded-lg transition-all" disabled="">
+                                重新测试
+                            </button>
+                        </div>
+                        
+                        <div class="md:w-2/3">
+                            <!-- 测试区域 -->
+                            <div id="quiz-container" class="relative bg-dark/5 rounded-xl overflow-hidden min-h-[400px] border-2 border-dark/10 p-6">
+                                <!-- 测试开始提示 -->
+                                <div id="quiz-intro" class="absolute inset-0 flex flex-col items-center justify-center z-20 bg-dark/70 text-white">
+                                    <i class="fa fa-question-circle text-6xl mb-4 text-accent"></i>
+                                    <h3 class="text-2xl font-bold mb-2">Scarlet粉丝测试</h3>
+                                    <p class="mb-6 text-center px-4">准备好测试你对Scarlet的了解了吗？点击开始按钮开始挑战！</p>
+                                </div>
+                                
+                                <!-- 问题容器 -->
+                                <div id="question-container" class="hidden h-full flex flex-col">
+                                    <div class="mb-8">
+                                        <h3 id="question-text" class="text-xl font-bold mb-2"></h3>
+                                        <p class="text-gray-500 text-sm" id="question-hint"></p>
+                                    </div>
+                                    
+                                    <div id="answers-container" class="grid grid-cols-1 gap-3 flex-grow"></div>
+                                    
+                                    <div class="mt-6">
+                                        <button id="next-question" class="bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-2 rounded-lg transition-all float-right hidden">
+                                            下一题 <i class="fa fa-arrow-right ml-1"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- 测试结果 -->
+                                <div id="quiz-results" class="hidden h-full flex flex-col items-center justify-center text-center p-6">
+                                    <div id="result-icon" class="text-6xl mb-4"></div>
+                                    <h3 id="result-title" class="text-2xl font-bold mb-2"></h3>
+                                    <p id="result-description" class="mb-6 max-w-md"></p>
+                                    <div class="mb-6 p-4 bg-light rounded-lg">
+                                        <p class="text-lg"><span class="font-bold">最终得分:</span> <span id="final-score" class="text-primary text-2xl">0</span>/100</p>
+                                        <p id="fan-title" class="text-accent font-bold mt-2"></p>
+                                    </div>
+                                    <button id="play-again" class="bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-lg transition-all transform hover:scale-105">
+                                        再玩一次
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 应援墙 -->
+    <section id="fanwall" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="font-display font-bold text-[clamp(1.8rem,4vw,2.5rem)] text-dark mb-4">粉丝应援墙</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">留下你对Scarlet的祝福和支持，与其他粉丝一起分享这份热爱</p>
+                <div class="w-24 h-1 bg-primary mx-auto mt-4"></div>
+            </div>
+            
+            <div class="max-w-3xl mx-auto mb-12">
+                <form id="fan-message-form" class="bg-light p-6 rounded-xl shadow-md">
+                    <div class="mb-4">
+                        <label for="fan-name" class="block text-gray-700 font-medium mb-2">你的昵称</label>
+                        <input type="text" id="fan-name" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入你的昵称">
+                    </div>
+                    <div class="mb-4">
+                        <label for="fan-message" class="block text-gray-700 font-medium mb-2">想对Scarlet说的话</label>
+                        <textarea id="fan-message" rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="写下你对Scarlet的祝福和支持..."></textarea>
+                    </div>
+                    <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-lg transition-all transform hover:scale-105">
+                        发布留言 <i class="fa fa-paper-plane ml-2"></i>
+                    </button>
+                </form>
+            </div>
+            
+            <div id="messages-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 留言将通过JavaScript动态生成 -->
+                <div class="bg-light p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                    <div class="flex items-center mb-4">
+                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/892f2e6367d44d75a793e0082a9ce44e~tplv-a9rns2rl98-image.image?rcl=202509161514484CE1BB438BD6BAC859F9&amp;rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1758611692&amp;x-signature=E4iLsRAgV44v42J6%2B7A4yeXpbBE%3D" alt="粉丝头像" class="w-12 h-12 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold">小红莓</h4>
+                            <p class="text-gray-500 text-sm">2小时前</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">Scarlet的新曲太好听了！循环播放了一整天，每次听都能感受到满满的能量！加油，永远支持你！</p>
+                    <div class="flex items-center text-gray-500">
+                        <button class="flex items-center hover:text-primary transition-colors">
+                            <i class="fa fa-heart-o mr-1"></i> 喜欢 (24)
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-light p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                    <div class="flex items-center mb-4">
+                        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/e80e1691640f4f42869c1ab1f55c582e~tplv-a9rns2rl98-image.image?rcl=202509161515034CC4CCF22C7594CDF442&amp;rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1758611707&amp;x-signature=4uusJYEXmDl9vr03FebwVbavxK8%3D" alt="粉丝头像" class="w-12 h-12 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold">星之守护者</h4>
+                            <p class="text-gray-500 text-sm">昨天</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">第一次看Scarlet的现场演出，简直太震撼了！舞台表现力超强，互动也很亲切，希望能有机会再参加一次！</p>
+                    <div class="flex items-center text-gray-500">
+                        <button class="flex items-center hover:text-primary transition-colors">
+                            <i class="fa fa-heart-o mr-1"></i> 喜欢 (56)
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-light p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                    <div class="flex items-center mb-4">
+                        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/fee25d950c6d4a56b18c474e6aeee208~tplv-a9rns2rl98-image.image?rcl=20250916151519102913D696FF6DB1B4B5&amp;rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1758611723&amp;x-signature=5VtsL1YX1lYH1CHmN0z4QAOsIzA%3D" alt="粉丝头像" class="w-12 h-12 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold">音乐爱好者</h4>
+                            <p class="text-gray-500 text-sm">3天前</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">从出道就开始关注Scarlet了，看着你一点点成长，越来越优秀，真的很开心！期待未来更多精彩的作品！</p>
+                    <div class="flex items-center text-gray-500">
+                        <button class="flex items-center hover:text-primary transition-colors">
+                            <i class="fa fa-heart-o mr-1"></i> 喜欢 (38)
                         </button>
                     </div>
                 </div>
             </div>
             
-            <!-- 宠物卡片网格 -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <!-- 宠物卡片 1 -->
-                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
-                    <div class="relative">
-                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/23654b4de74d408e81839d8411939c35~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370213&amp;x-signature=iJgqcQCAgf%2F5FqAWb1EdhCIps0M%3D" alt="金毛犬" class="w-full h-64 object-cover">
-                        <div class="absolute top-4 left-4 bg-secondary text-white text-sm font-medium py-1 px-3 rounded-full">
-                            狗狗
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-3">
-                            <h3 class="text-xl font-bold text-dark">金金</h3>
-                            <span class="text-sm text-gray-600">1岁</span>
-                        </div>
-                        <p class="text-gray-600 mb-4">金金是一只活泼开朗的金毛犬，非常友好，喜欢和人互动，适合有孩子的家庭。</p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">友善</span>
-                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">活泼</span>
-                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">聪明</span>
-                        </div>
-                        <a href="#" class="block w-full text-center py-3 px-4 bg-primary hover:bg-primary/90 text-tertiary font-medium rounded-lg transition-colors">
-                            申请领养
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- 宠物卡片 2 -->
-                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
-                    <div class="relative">
-                        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/10596a60e6fd431290b8f4764d2d086c~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370259&amp;x-signature=byWql7HGh4e6S%2FZicArjmtHAIaw%3D" alt="橘猫" class="w-full h-64 object-cover">
-                        <div class="absolute top-4 left-4 bg-secondary text-white text-sm font-medium py-1 px-3 rounded-full">
-                            猫咪
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-3">
-                            <h3 class="text-xl font-bold text-dark">米米</h3>
-                            <span class="text-sm text-gray-600">2岁</span>
-                        </div>
-                        <p class="text-gray-600 mb-4">米米是一只温顺的波斯猫，喜欢安静的环境，偶尔会撒娇，适合独居或安静的家庭。</p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">温顺</span>
-                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">独立</span>
-                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">粘人</span>
-                        </div>
-                        <a href="#" class="block w-full text-center py-3 px-4 bg-primary hover:bg-primary/90 text-tertiary font-medium rounded-lg transition-colors">
-                            申请领养
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- 宠物卡片 3 -->
-                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
-                    <div class="relative">
-                        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/e2aa792674c843c9be1f48cf123baf6b~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370288&amp;x-signature=ONm%2BGHHpPhVK4kNwrigJIft7WVs%3D" alt="拉布拉多" class="w-full h-64 object-cover">
-                        <div class="absolute top-4 left-4 bg-secondary text-white text-sm font-medium py-1 px-3 rounded-full">
-                            狗狗
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-3">
-                            <h3 class="text-xl font-bold text-dark">多多</h3>
-                            <span class="text-sm text-gray-600">3岁</span>
-                        </div>
-                        <p class="text-gray-600 mb-4">多多是一只训练有素的拉布拉多，非常聪明，已经学会了很多指令，适合有经验的主人。</p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">聪明</span>
-                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">听话</span>
-                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">温顺</span>
-                        </div>
-                        <a href="#" class="block w-full text-center py-3 px-4 bg-primary hover:bg-primary/90 text-tertiary font-medium rounded-lg transition-colors">
-                            申请领养
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- 宠物卡片 4 -->
-                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
-                    <div class="relative">
-                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/0921f5ff476f4c488966147d52d8a925~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370312&amp;x-signature=za3WUTvA80kgvGzT%2B13rGqIbzfA%3D" alt="布偶猫" class="w-full h-64 object-cover">
-                        <div class="absolute top-4 left-4 bg-secondary text-white text-sm font-medium py-1 px-3 rounded-full">
-                            猫咪
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-3">
-                            <h3 class="text-xl font-bold text-dark">布布</h3>
-                            <span class="text-sm text-gray-600">1岁</span>
-                        </div>
-                        <p class="text-gray-600 mb-4">
-                            布布是一只漂亮的布偶猫，毛发柔软，性格温顺，喜欢被人抚摸，是理想的伴侣猫。
-                        </p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">漂亮</span>
-                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">温顺</span>
-                            <span class="text-xs bg-primary/50 text-tertiary py-1 px-2 rounded-full">亲人</span>
-                        </div>
-                        <a href="#" class="block w-full text-center py-3 px-4 bg-primary hover:bg-primary/90 text-tertiary font-medium rounded-lg transition-colors">
-                            申请领养
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 查看更多按钮 -->
             <div class="text-center mt-12">
-                <a href="#" class="inline-flex items-center text-tertiary font-medium hover:text-tertiary/80 transition-colors">
-                    查看更多宠物 <i class="fa fa-long-arrow-right ml-2"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 领养流程 -->
-    <section id="process" class="section-padding bg-primary/20">
-        <div class="container mx-auto px-4">
-            <h2 class="section-title">领养流程</h2>
-            <p class="section-subtitle">
-                领养一只宠物是一项长期的承诺，我们希望确保每只宠物都能找到最适合它们的家。以下是我们的领养流程：
-            </p>
-            
-            <div class="relative">
-                <!-- 连接线 -->
-                <div class="hidden md:block absolute left-1/2 top-1/4 bottom-1/4 w-1 bg-tertiary/30 transform -translate-x-1/2"></div>
-                
-                <!-- 步骤列表 -->
-                <div class="space-y-12 md:space-y-24 relative">
-                    <!-- 步骤 1 -->
-                    <div class="flex flex-col md:flex-row items-center">
-                        <div class="md:w-1/2 md:pr-12 mb-8 md:mb-0 md:text-right">
-                            <h3 class="text-xl font-bold text-dark mb-3">浏览与选择</h3>
-                            <p class="text-gray-600">
-                                浏览我们网站上的可领养宠物，根据您的生活方式和偏好选择合适的伴侣。每只宠物都有详细的介绍和照片。
-                            </p>
-                        </div>
-                        <div class="flex items-center justify-center w-16 h-16 bg-tertiary text-white rounded-full text-2xl font-bold mb-8 md:mb-0 z-10">
-                            1
-                        </div>
-                        <div class="md:w-1/2 md:pl-12">
-                            <div class="bg-white p-6 rounded-xl shadow-md">
-                                <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/b6f2dbf8bffd45239fe49477abead799~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370164&amp;x-signature=PBZd%2Fk2YHdJyeTJlS0wVgRH7FDw%3D" alt="浏览宠物" class="w-full h-48 object-cover rounded-lg mb-4">
-                                <p class="text-gray-700 text-sm italic">在我们的网站上轻松找到您心仪的毛孩子</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 步骤 2 -->
-                    <div class="flex flex-col md:flex-row-reverse items-center">
-                        <div class="md:w-1/2 md:pl-12 mb-8 md:mb-0 md:text-left">
-                            <h3 class="text-xl font-bold text-dark mb-3">提交申请</h3>
-                            <p class="text-gray-600">
-                                填写领养申请表，提供您的个人信息、居住环境和生活方式等资料，帮助我们评估您是否适合领养该宠物。
-                            </p>
-                        </div>
-                        <div class="flex items-center justify-center w-16 h-16 bg-tertiary text-white rounded-full text-2xl font-bold mb-8 md:mb-0 z-10">
-                            2
-                        </div>
-                        <div class="md:w-1/2 md:pr-12">
-                            <div class="bg-white p-6 rounded-xl shadow-md">
-                                <img src="https://picsum.photos/id/180/600/400" alt="提交申请" class="w-full h-48 object-cover rounded-lg mb-4">
-                                <p class="text-gray-700 text-sm italic">填写详细的申请表，帮助我们了解您的情况</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 步骤 3 -->
-                    <div class="flex flex-col md:flex-row items-center">
-                        <div class="md:w-1/2 md:pr-12 mb-8 md:mb-0 md:text-right">
-                            <h3 class="text-xl font-bold text-dark mb-3">面谈与家访</h3>
-                            <p class="text-gray-600">
-                                我们会安排与您的面谈，进一步了解您的需求和期望，并可能进行家访，确保您的居住环境适合宠物生活。
-                            </p>
-                        </div>
-                        <div class="flex items-center justify-center w-16 h-16 bg-tertiary text-white rounded-full text-2xl font-bold mb-8 md:mb-0 z-10">
-                            3
-                        </div>
-                        <div class="md:w-1/2 md:pl-12">
-                            <div class="bg-white p-6 rounded-xl shadow-md">
-                                <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/11846e23f65d4dbf99dcc5ce4269b672~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370128&amp;x-signature=cX%2FTW4zNffWBLFkejrCtlvrYkcM%3D" alt="面谈与家访" class="w-full h-48 object-cover rounded-lg mb-4">
-                                <p class="text-gray-700 text-sm italic">我们会确保您的家庭环境适合宠物生活</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 步骤 4 -->
-                    <div class="flex flex-col md:flex-row-reverse items-center">
-                        <div class="md:w-1/2 md:pl-12 mb-8 md:mb-0 md:text-left">
-                            <h3 class="text-xl font-bold text-dark mb-3">签约与接领</h3>
-                            <p class="text-gray-600">
-                                如果申请通过，您将签署领养协议并支付少量领养费用（用于宠物医疗和护理），然后就可以将您的新伙伴带回家了。
-                            </p>
-                        </div>
-                        <div class="flex items-center justify-center w-16 h-16 bg-tertiary text-white rounded-full text-2xl font-bold mb-8 md:mb-0 z-10">
-                            4
-                        </div>
-                        <div class="md:w-1/2 md:pr-12">
-                            <div class="bg-white p-6 rounded-xl shadow-md">
-                                <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/e50c0f208ae74b84a82ff7e9f71c3226~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370100&amp;x-signature=ph0z3J%2FJOHJAkUm0aWZoe3ZCW5U%3D" alt="签约与接领" class="w-full h-48 object-cover rounded-lg mb-4">
-                                <p class="text-gray-700 text-sm italic">签署领养协议，开启幸福生活</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 开始领养按钮 -->
-            <div class="text-center mt-16">
-                <a href="#pets" class="btn-primary">
-                    <i class="fa fa-heart mr-2"></i> 开始领养之旅
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 领养者反馈 -->
-    <section id="stories" class="section-padding bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="section-title">成功故事</h2>
-            <p class="section-subtitle">
-                每一个领养故事都是独特的。看看这些宠物如何在新家庭中幸福生活，以及领养如何改变了他们的主人的生活。
-            </p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- 故事卡片 1 -->
-                <div class="bg-light rounded-xl overflow-hidden shadow-md card-hover">
-                    <div class="relative">
-                        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/e6020c0b1a0e4b2290e541fffeed58c9~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751369976&amp;x-signature=xQwNVxJJCsGFQbCZch%2FVnGZ%2BjxY%3D" alt="领养故事照片" class="w-full h-64 object-cover">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center mb-4">
-                            <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/a87728932fb6447a9e4676c638e433ea~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751369953&amp;x-signature=ld0XWo2fVXR3sdJzeU2hDBaWbgk%3D" alt="领养者照片" class="w-12 h-12 rounded-full mr-4">
-                            <div>
-                                <h4 class="font-bold text-dark">李先生和小金</h4>
-                                <p class="text-sm text-gray-500">领养于 2023年5月</p>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-4">
-                            "领养小金是我做过的最好的决定之一。他不仅给我的生活带来了无尽的欢乐，还让我每天都有了运动的动力。他是如此的友善和聪明，已经成为了家庭中不可或缺的一员。"
-                        </p>
-                        <div class="flex items-center text-yellow-400">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <span class="ml-2 text-gray-600 text-sm">5.0</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 故事卡片 2 -->
-                <div class="bg-light rounded-xl overflow-hidden shadow-md card-hover">
-                    <div class="relative">
-                        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/84f0fd0d3d1946aaa7f0714274fe8c8f~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370031&amp;x-signature=GGQVQWvc2C%2Fuwthc9h8WWEDq%2BXo%3D" alt="领养故事照片" class="w-full h-64 object-cover">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center mb-4">
-                            <img src="https://picsum.photos/id/65/100/100" alt="领养者照片" class="w-12 h-12 rounded-full mr-4">
-                            <div>
-                                <h4 class="font-bold text-dark">王女士和阿橘</h4>
-                                <p class="text-sm text-gray-500">领养于 2023年8月</p>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-4">
-                            "作为一个独居的上班族，阿橘给我的生活带来了很多温暖。每天下班回家，他都会在门口等我，让我不再感到孤单。他的性格很温顺，非常适合我的生活方式。"
-                        </p>
-                        <div class="flex items-center text-yellow-400">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star-half-o"></i>
-                            <span class="ml-2 text-gray-600 text-sm">4.5</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 故事卡片 3 -->
-                <div class="bg-light rounded-xl overflow-hidden shadow-md card-hover">
-                    <div class="relative">
-                        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/42fb62f728d94484bf0177ce36498d2a~tplv-a9rns2rl98-image.image?rk3s=8e244e95&amp;rrcfp=2609e108&amp;x-expires=1751370075&amp;x-signature=iSP6GpUuYR6KUwGYIV9mB53NZyY%3D" alt="领养故事照片" class="w-full h-64 object-cover">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center mb-4">
-                            <img src="https://picsum.photos/id/66/100/100" alt="领养者照片" class="w-12 h-12 rounded-full mr-4">
-                            <div>
-                                <h4 class="font-bold text-dark">张先生一家和拉拉</h4>
-                                <p class="text-sm text-gray-500">领养于 2023年10月</p>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-4">
-                            "拉拉是我们家的开心果，孩子们都非常喜欢他。他很有耐心，对孩子们非常友好，成为了孩子们最好的伙伴。领养过程很顺利，平台的工作人员给了我们很多有用的建议。"
-                        </p>
-                        <div class="flex items-center text-yellow-400">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <span class="ml-2 text-gray-600 text-sm">5.0</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 分享故事按钮 -->
-            <div class="text-center mt-12">
-                <a href="#" class="btn-secondary">
-                    <i class="fa fa-share-alt mr-2"></i> 分享你的故事
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 数据统计 -->
-    <section class="py-16 bg-tertiary/10">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <div class="p-6">
-                    <div class="text-4xl font-bold text-tertiary mb-2" id="counter-pets">500+</div>
-                    <p class="text-gray-700">成功领养的宠物</p>
-                </div>
-                <div class="p-6">
-                    <div class="text-4xl font-bold text-tertiary mb-2" id="counter-families">300+</div>
-                    <p class="text-gray-700">幸福的领养家庭</p>
-                </div>
-                <div class="p-6">
-                    <div class="text-4xl font-bold text-tertiary mb-2" id="counter-volunteers">100+</div>
-                    <p class="text-gray-700">爱心志愿者</p>
-                </div>
-                <div class="p-6">
-                    <div class="text-4xl font-bold text-tertiary mb-2" id="counter-donations">¥200,000+</div>
-                    <p class="text-gray-700">爱心捐款</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 地图定位模块 -->
-    <section id="locations" class="section-padding bg-white">
-        <div class="container mx-auto px-4">
-            <h2 class="section-title">领养地点</h2>
-            <p class="section-subtitle">
-                查找附近的领养中心和志愿者活动地点，我们的团队随时准备帮助您找到理想的伴侣。
-            </p>
-            
-            <div class="flex flex-col lg:flex-row gap-8">
-                <div class="lg:w-1/3">
-                    <div class="bg-light rounded-xl p-6 shadow-md h-full">
-                        <h3 class="text-xl font-bold text-dark mb-4">选择城市</h3>
-                        <div class="mb-6">
-                            <input type="text" placeholder="输入城市名称" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tertiary/50 focus:border-tertiary">
-                        </div>
-                        
-                        <h3 class="text-xl font-bold text-dark mb-4">附近的领养中心</h3>
-                        <div class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
-                            <!-- 领养中心 1 -->
-                            <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                                <h4 class="font-bold text-dark mb-1">爱宠之家北京中心</h4>
-                                <p class="text-gray-600 text-sm mb-2">北京市朝阳区建国路88号</p>
-                                <div class="flex items-center text-sm text-gray-500">
-                                    <i class="fa fa-phone mr-2"></i> 010-12345678
-                                    <span class="mx-2">|</span>
-                                    <i class="fa fa-clock-o mr-2"></i> 周一至周日 10:00-18:00
-                                </div>
-                            </div>
-                            
-                            <!-- 领养中心 2 -->
-                            <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                                <h4 class="font-bold text-dark mb-1">爱宠之家上海中心</h4>
-                                <p class="text-gray-600 text-sm mb-2">上海市徐汇区淮海中路1200号</p>
-                                <div class="flex items-center text-sm text-gray-500">
-                                    <i class="fa fa-phone mr-2"></i> 021-23456789
-                                    <span class="mx-2">|</span>
-                                    <i class="fa fa-clock-o mr-2"></i> 周一至周日 10:00-18:00
-                                </div>
-                            </div>
-                            
-                            <!-- 领养中心 3 -->
-                            <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                                <h4 class="font-bold text-dark mb-1">爱宠之家广州中心</h4>
-                                <p class="text-gray-600 text-sm mb-2">广州市天河区天河路385号</p>
-                                <div class="flex items-center text-sm text-gray-500">
-                                    <i class="fa fa-phone mr-2"></i> 020-34567890
-                                    <span class="mx-2">|</span>
-                                    <i class="fa fa-clock-o mr-2"></i> 周一至周日 10:00-18:00
-                                </div>
-                            </div>
-                            
-                            <!-- 领养中心 4 -->
-                            <div class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                                <h4 class="font-bold text-dark mb-1">爱宠之家深圳中心</h4>
-                                <p class="text-gray-600 text-sm mb-2">深圳市南山区科技园南区8栋</p>
-                                <div class="flex items-center text-sm text-gray-500">
-                                    <i class="fa fa-phone mr-2"></i> 0755-45678901
-                                    <span class="mx-2">|</span>
-                                    <i class="fa fa-clock-o mr-2"></i> 周一至周日 10:00-18:00
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="lg:w-2/3">
-                    <div class="bg-light rounded-xl overflow-hidden shadow-md h-[500px] relative">
-                        <!-- 地图占位 -->
-                        <div class="w-full h-full bg-primary/20 flex items-center justify-center">
-                            <div class="text-center">
-                                <i class="fa fa-map-marker text-5xl text-tertiary mb-4"></i>
-                                <p class="text-gray-600">地图将在这里显示</p>
-                                <p class="text-gray-500 text-sm mt-2">选择城市后，将显示附近的领养中心位置</p>
-                            </div>
-                        </div>
-                        
-                        <!-- 地图标记示例 -->
-                        <div class="absolute top-1/4 left-1/3 transform -translate-x-1/2 -translate-y-1/2">
-                            <div class="bg-tertiary text-white text-xs font-bold py-1 px-2 rounded shadow-md">
-                                北京中心
-                            </div>
-                            <div class="w-4 h-4 bg-tertiary rounded-full mt-1 mx-auto relative">
-                                <div class="absolute inset-0 bg-white rounded-full animate-ping"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="absolute top-1/2 left-2/3 transform -translate-x-1/2 -translate-y-1/2">
-                            <div class="bg-tertiary text-white text-xs font-bold py-1 px-2 rounded shadow-md">
-                                上海中心
-                            </div>
-                            <div class="w-4 h-4 bg-tertiary rounded-full mt-1 mx-auto relative">
-                                <div class="absolute inset-0 bg-white rounded-full animate-ping"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="absolute bottom-1/4 right-1/3 transform -translate-x-1/2 -translate-y-1/2">
-                            <div class="bg-tertiary text-white text-xs font-bold py-1 px-2 rounded shadow-md">
-                                广州中心
-                            </div>
-                            <div class="w-4 h-4 bg-tertiary rounded-full mt-1 mx-auto relative">
-                                <div class="absolute inset-0 bg-white rounded-full animate-ping"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 志愿者招募与捐助 -->
-    <section id="volunteer" class="section-padding bg-gradient-to-br from-tertiary/20 to-primary/30">
-        <div class="container mx-auto px-4">
-            <h2 class="section-title">加入我们</h2>
-            <p class="section-subtitle">
-                除了领养，您还可以通过其他方式帮助这些可爱的生命。无论是成为志愿者还是捐款，每一份爱心都能改变它们的命运。
-            </p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- 志愿者招募 -->
-                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
-                    <div class="relative">
-                        <img src="https://picsum.photos/id/1060/600/400" alt="志愿者活动" class="w-full h-64 object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
-                            <div class="p-6">
-                                <h3 class="text-2xl font-bold text-white mb-2">成为志愿者</h3>
-                                <p class="text-white/80">帮助照顾和关爱这些需要帮助的宠物</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">
-                            作为志愿者，您可以参与到宠物照顾、活动组织、领养宣传等工作中。无论您是有经验的宠物爱好者还是新手，我们都欢迎您的加入。
-                        </p>
-                        <ul class="space-y-2 mb-6">
-                            <li class="flex items-start">
-                                <i class="fa fa-check-circle text-tertiary mt-1 mr-2"></i>
-                                <span class="text-gray-700">灵活的志愿者时间安排</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa fa-check-circle text-tertiary mt-1 mr-2"></i>
-                                <span class="text-gray-700">专业的培训和指导</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa fa-check-circle text-tertiary mt-1 mr-2"></i>
-                                <span class="text-gray-700">与志同道合的人一起工作</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa fa-check-circle text-tertiary mt-1 mr-2"></i>
-                                <span class="text-gray-700">获得志愿者证书和推荐信</span>
-                            </li>
-                        </ul>
-                        <a href="#" class="block w-full text-center py-3 px-4 bg-tertiary hover:bg-tertiary/90 text-white font-medium rounded-lg transition-colors">
-                            立即报名
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- 捐款支持 -->
-                <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover">
-                    <div class="relative">
-                        <img src="https://picsum.photos/id/1062/600/400" alt="捐款支持" class="w-full h-64 object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
-                            <div class="p-6">
-                                <h3 class="text-2xl font-bold text-white mb-2">捐款支持</h3>
-                                <p class="text-white/80">您的捐款将用于宠物医疗和生活费用</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-600 mb-4">
-                            您的捐款将直接用于宠物的食物、医疗和生活环境改善。每一笔捐款都能帮助我们为更多的流浪动物提供帮助。
-                        </p>
-                        
-                        <!-- 捐款进度 -->
-                        <div class="mb-6">
-                            <div class="flex justify-between mb-2">
-                                <span class="font-medium text-dark">本月目标：¥50,000</span>
-                                <span class="font-medium text-tertiary">已筹：¥32,500 (65%)</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-3">
-                                <div class="bg-tertiary h-3 rounded-full" style="width: 65%"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-3 gap-4 mb-6">
-                            <button class="py-3 px-4 bg-primary hover:bg-primary/90 text-tertiary font-medium rounded-lg transition-colors">
-                                ¥50
-                            </button>
-                            <button class="py-3 px-4 bg-primary hover:bg-primary/90 text-tertiary font-medium rounded-lg transition-colors">
-                                ¥100
-                            </button>
-                            <button class="py-3 px-4 bg-primary hover:bg-primary/90 text-tertiary font-medium rounded-lg transition-colors">
-                                ¥200
-                            </button>
-                        </div>
-                        
-                        <a href="#" class="block w-full text-center py-3 px-4 bg-tertiary hover:bg-tertiary/90 text-white font-medium rounded-lg transition-colors">
-                            其他金额
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 订阅通讯 -->
-    <section class="py-16 bg-tertiary/10">
-        <div class="container mx-auto px-4">
-            <div class="max-w-3xl mx-auto text-center">
-                <h2 class="text-3xl font-bold text-dark mb-4">订阅我们的通讯</h2>
-                <p class="text-gray-600 mb-8">
-                    获取最新的宠物领养信息、活动通知和养宠小贴士，成为我们社区的一员。
-                </p>
-                <form class="flex flex-col sm:flex-row gap-4">
-                    <input type="email" placeholder="输入您的邮箱地址" class="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-tertiary/50 focus:border-tertiary">
-                    <button type="submit" class="btn-primary whitespace-nowrap">
-                        <i class="fa fa-paper-plane mr-2"></i> 立即订阅
-                    </button>
-                </form>
-                <p class="text-gray-500 text-sm mt-4">
-                    我们尊重您的隐私，不会向第三方分享您的信息。
-                </p>
+                <button id="load-more" class="inline-block bg-dark/10 hover:bg-dark/20 text-dark font-semibold px-8 py-3 rounded-full transition-all">
+                    加载更多留言 <i class="fa fa-refresh ml-2"></i>
+                </button>
             </div>
         </div>
     </section>
 
     <!-- 页脚 -->
-    <footer class="bg-dark text-white pt-16 pb-8">
+    <footer class="bg-dark text-white py-12">
         <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
-                    <div class="flex items-center mb-6">
-                        <i class="fa fa-paw text-secondary text-3xl mr-2"></i>
-                        <span class="text-2xl font-bold">爱宠之家</span>
-                    </div>
-                    <p class="text-gray-400 mb-6">
-                        我们致力于为每一只流浪宠物找到温暖的家，同时帮助人们找到最适合的伴侣。
+                    <h3 class="font-display font-bold text-xl mb-4 flex items-center">
+                        <i class="fa fa-heart text-primary mr-2"></i> Scarlet应援站
+                    </h3>
+                    <p class="text-gray-400 mb-4">
+                        二次元超人气偶像Scarlet的官方应援站，为粉丝提供最新资讯和互动平台。
                     </p>
                     <div class="flex space-x-4">
-                        <a href="#" class="text-gray-400 hover:text-secondary transition-colors">
-                            <i class="fa fa-weixin text-xl"></i>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fa fa-twitter"></i>
                         </a>
-                        <a href="#" class="text-gray-400 hover:text-secondary transition-colors">
-                            <i class="fa fa-weibo text-xl"></i>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fa fa-youtube-play"></i>
                         </a>
-                        <a href="#" class="text-gray-400 hover:text-secondary transition-colors">
-                            <i class="fa fa-instagram text-xl"></i>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fa fa-instagram"></i>
                         </a>
-                        <a href="#" class="text-gray-400 hover:text-secondary transition-colors">
-                            <i class="fa fa-youtube-play text-xl"></i>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fa fa-discord"></i>
                         </a>
                     </div>
                 </div>
                 
                 <div>
-                    <h3 class="text-lg font-bold mb-6">快速链接</h3>
-                    <ul class="space-y-3">
-                        <li><a href="#home" class="text-gray-400 hover:text-secondary transition-colors">首页</a></li>
-                        <li><a href="#pets" class="text-gray-400 hover:text-secondary transition-colors">可领养宠物</a></li>
-                        <li><a href="#process" class="text-gray-400 hover:text-secondary transition-colors">领养流程</a></li>
-                        <li><a href="#stories" class="text-gray-400 hover:text-secondary transition-colors">成功故事</a></li>
-                        <li><a href="#locations" class="text-gray-400 hover:text-secondary transition-colors">领养地点</a></li>
-                        <li><a href="#volunteer" class="text-gray-400 hover:text-secondary transition-colors">加入我们</a></li>
+                    <h4 class="font-bold text-lg mb-4">快速链接</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">关于Scarlet</a></li>
+                        <li><a href="#works" class="text-gray-400 hover:text-white transition-colors">音乐作品</a></li>
+                        <li><a href="#gallery" class="text-gray-400 hover:text-white transition-colors">精美图集</a></li>
+                        <li><a href="#quiz" class="text-gray-400 hover:text-white transition-colors">趣味测试</a></li>
+                        <li><a href="#fanwall" class="text-gray-400 hover:text-white transition-colors">应援墙</a></li>
                     </ul>
                 </div>
                 
                 <div>
-                    <h3 class="text-lg font-bold mb-6">联系方式</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fa fa-map-marker text-secondary mt-1 mr-3"></i>
-                            <span class="text-gray-400">北京市朝阳区建国路88号爱宠大厦</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fa fa-phone text-secondary mt-1 mr-3"></i>
-                            <span class="text-gray-400">010-12345678</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fa fa-envelope text-secondary mt-1 mr-3"></i>
-                            <span class="text-gray-400">contact@petlove.com</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fa fa-clock-o text-secondary mt-1 mr-3"></i>
-                            <span class="text-gray-400">周一至周日 10:00-18:00</span>
-                        </li>
+                    <h4 class="font-bold text-lg mb-4">相关资源</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">官方网站</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">音乐平台</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">周边商店</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">粉丝社区</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">活动日历</a></li>
                     </ul>
                 </div>
                 
                 <div>
-                    <h3 class="text-lg font-bold mb-6">下载我们的应用</h3>
-                    <p class="text-gray-400 mb-4">
-                        随时随地浏览可领养宠物，提交申请，获取最新动态。
-                    </p>
-                    <div class="flex flex-col space-y-3">
-                        <a href="#" class="bg-gray-800 hover:bg-gray-700 transition-colors p-3 rounded-lg flex items-center">
-                            <i class="fa fa-apple text-2xl mr-3"></i>
-                            <div>
-                                <div class="text-xs">下载</div>
-                                <div class="font-medium">App Store</div>
-                            </div>
-                        </a>
-                        <a href="#" class="bg-gray-800 hover:bg-gray-700 transition-colors p-3 rounded-lg flex items-center">
-                            <i class="fa fa-android text-2xl mr-3"></i>
-                            <div>
-                                <div class="text-xs">下载</div>
-                                <div class="font-medium">Google Play</div>
-                            </div>
-                        </a>
-                    </div>
+                    <h4 class="font-bold text-lg mb-4">订阅最新资讯</h4>
+                    <p class="text-gray-400 mb-4">第一时间获取Scarlet的最新动态和活动信息</p>
+                    <form class="flex">
+                        <input type="email" placeholder="你的邮箱地址" class="px-4 py-2 rounded-l-lg w-full focus:outline-none text-dark">
+                        <button type="submit" class="bg-primary hover:bg-primary/90 px-4 py-2 rounded-r-lg transition-colors">
+                            <i class="fa fa-paper-plane"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
             
-            <div class="border-t border-gray-800 pt-8">
-                <div class="flex flex-col md:flex-row justify-between items-center">
-                    <p class="text-gray-500 text-sm mb-4 md:mb-0">
-                        © 2025 爱宠之家 版权所有 | 京ICP备12345678号
-                    </p>
-                    <div class="flex space-x-6">
-                        <a href="#" class="text-gray-500 hover:text-gray-400 text-sm">隐私政策</a>
-                        <a href="#" class="text-gray-500 hover:text-gray-400 text-sm">使用条款</a>
-                        <a href="#" class="text-gray-500 hover:text-gray-400 text-sm">Cookie政策</a>
-                    </div>
-                </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+                <p>© 2023 Scarlet应援站 版权所有 | 本网站仅用于粉丝交流，非官方网站</p>
             </div>
         </div>
     </footer>
 
-    <!-- 回到顶部按钮 -->
-    <button id="back-to-top" class="fixed bottom-6 right-6 bg-tertiary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-tertiary/90">
-        <i class="fa fa-arrow-up"></i>
-    </button>
+    <!-- 图片查看器模态框 -->
+    <div id="image-viewer" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden">
+        <button id="close-viewer" class="absolute top-6 right-6 text-white text-3xl hover:text-gray-300 transition-colors">
+            <i class="fa fa-times"></i>
+        </button>
+        <img id="viewer-image" src="" alt="大图预览" class="max-w-[90%] max-h-[90vh]">
+    </div>
 
-    <!-- JavaScript -->
     <script>
         // 导航栏滚动效果
         const navbar = document.getElementById('navbar');
-        const backToTop = document.getElementById('back-to-top');
-        
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 100) {
-                navbar.classList.add('bg-white', 'shadow-md');
-                navbar.classList.remove('py-4');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-dark/90', 'backdrop-blur', 'shadow-lg');
+                navbar.classList.remove('py-3');
                 navbar.classList.add('py-2');
-                
-                backToTop.classList.remove('opacity-0', 'invisible');
-                backToTop.classList.add('opacity-100', 'visible');
             } else {
-                navbar.classList.remove('bg-white', 'shadow-md');
+                navbar.classList.remove('bg-dark/90', 'backdrop-blur', 'shadow-lg');
                 navbar.classList.remove('py-2');
-                navbar.classList.add('py-4');
-                
-                backToTop.classList.add('opacity-0', 'invisible');
-                backToTop.classList.remove('opacity-100', 'visible');
+                navbar.classList.add('py-3');
             }
         });
         
         // 移动端菜单
-        const menuToggle = document.getElementById('menu-toggle');
-        const mobileMenu = document.getElementById('mobile-menu');
-        
-        menuToggle.addEventListener('click', function() {
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        menuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
             if (mobileMenu.classList.contains('hidden')) {
-                menuToggle.innerHTML = '<i class="fa fa-bars"></i>';
+                menuBtn.innerHTML = '<i class="fa fa-bars"></i>';
             } else {
-                menuToggle.innerHTML = '<i class="fa fa-times"></i>';
+                menuBtn.innerHTML = '<i class="fa fa-times"></i>';
             }
-        });
-        
-        // 回到顶部
-        backToTop.addEventListener('click', function() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
         });
         
         // 平滑滚动
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                
-                // 关闭移动菜单
-                if (!mobileMenu.classList.contains('hidden')) {
-                    mobileMenu.classList.add('hidden');
-                    menuToggle.innerHTML = '<i class="fa fa-bars"></i>';
-                }
-                
                 const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
+                if (targetId === '#') return;
                 
+                const targetElement = document.querySelector(targetId);
                 if (targetElement) {
                     window.scrollTo({
                         top: targetElement.offsetTop - 80,
                         behavior: 'smooth'
                     });
+                    
+                    // 关闭移动菜单
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        menuBtn.innerHTML = '<i class="fa fa-bars"></i>';
+                    }
                 }
             });
         });
         
-        // 数字动画
-        function animateValue(id, start, end, duration) {
-            const obj = document.getElementById(id);
-            if (!obj) return;
+        // 创建气泡装饰
+        function createBubbles() {
+            const bubblesContainer = document.getElementById('bubbles');
+            const bubbleCount = 20;
             
-            let startTime = null;
-            const step = timestamp => {
-                if (!startTime) startTime = timestamp;
-                const progress = Math.min((timestamp - startTime) / duration, 1);
-                const value = Math.floor(progress * (end - start) + start);
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                const size = Math.random() * 100 + 20;
+                const posX = Math.random() * 100;
+                const delay = Math.random() * 5;
+                const duration = Math.random() * 15 + 10;
                 
-                if (id === 'counter-donations') {
-                    obj.innerHTML = '¥' + value.toLocaleString() + '+';
-                } else {
-                    obj.innerHTML = value + '+';
-                }
+                bubble.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    background: rgba(255, 255, 255, 0.15);
+                    border-radius: 50%;
+                    left: ${posX}%;
+                    bottom: -${size}px;
+                    animation: float-up ${duration}s linear infinite ${delay}s;
+                    backdrop-filter: blur(2px);
+                `;
                 
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
-            };
-            window.requestAnimationFrame(step);
-        }
-        
-        // 检查元素是否在视口中
-        function isInViewport(element) {
-            const rect = element.getBoundingClientRect();
-            return (
-                rect.top >= 0 &&
-                rect.left >= 0 &&
-                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-            );
-        }
-        
-        // 滚动时检查并触发动画
-        let animationTriggered = false;
-        window.addEventListener('scroll', function() {
-            if (!animationTriggered && isInViewport(document.getElementById('counter-pets'))) {
-                animationTriggered = true;
-                animateValue('counter-pets', 0, 500, 2000);
-                animateValue('counter-families', 0, 300, 2000);
-                animateValue('counter-volunteers', 0, 100, 2000);
-                animateValue('counter-donations', 0, 200000, 2000);
+                bubblesContainer.appendChild(bubble);
             }
+            
+            // 添加气泡上升动画
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes float-up {
+                    0% {
+                        transform: translateY(0) translateX(0);
+                        opacity: 0;
+                    }
+                    10% {
+                        opacity: 1;
+                    }
+                    90% {
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: translateY(-100vh) translateX(${Math.random() * 100 - 50}px);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // 图片查看器
+        function setupImageViewer() {
+            const galleryItems = document.querySelectorAll('.gallery-item img');
+            const imageViewer = document.getElementById('image-viewer');
+            const viewerImage = document.getElementById('viewer-image');
+            const closeViewer = document.getElementById('close-viewer');
+            
+            galleryItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    viewerImage.src = item.src;
+                    viewerImage.alt = item.alt;
+                    imageViewer.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            closeViewer.addEventListener('click', () => {
+                imageViewer.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            });
+            
+            imageViewer.addEventListener('click', (e) => {
+                if (e.target === imageViewer) {
+                    imageViewer.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        }
+        
+        // 趣味测试功能
+        function setupQuiz() {
+            // 获取DOM元素
+            const startQuizBtn = document.getElementById('start-quiz');
+            const resetQuizBtn = document.getElementById('reset-quiz');
+            const playAgainBtn = document.getElementById('play-again');
+            const quizIntro = document.getElementById('quiz-intro');
+            const questionContainer = document.getElementById('question-container');
+            const quizResults = document.getElementById('quiz-results');
+            const questionText = document.getElementById('question-text');
+            const questionHint = document.getElementById('question-hint');
+            const answersContainer = document.getElementById('answers-container');
+            const nextQuestionBtn = document.getElementById('next-question');
+            const quizProgress = document.getElementById('quiz-progress');
+            const progressBar = document.getElementById('progress-bar');
+            const quizScore = document.getElementById('quiz-score');
+            const quizTimer = document.getElementById('quiz-timer');
+            const resultIcon = document.getElementById('result-icon');
+            const resultTitle = document.getElementById('result-title');
+            const resultDescription = document.getElementById('result-description');
+            const finalScore = document.getElementById('final-score');
+            const fanTitle = document.getElementById('fan-title');
+            
+            // 测试问题数据
+            const questions = [
+                {
+                    text: "Scarlet的出道日期是哪一天？",
+                    hint: "提示：在3月份",
+                    answers: [
+                        { text: "2023年2月14日", correct: false },
+                        { text: "2023年3月14日", correct: true },
+                        { text: "2023年4月14日", correct: false }
+                    ]
+                },
+                {
+                    text: "Scarlet的粉丝名称是什么？",
+                    hint: "提示：与偶像名字相关",
+                    answers: [
+                        { text: "Scarlets", correct: true },
+                        { text: "Scarletters", correct: false },
+                        { text: "Scarlet Fans", correct: false }
+                    ]
+                },
+                {
+                    text: "以下哪首是Scarlet的出道单曲？",
+                    hint: "提示：节奏感很强",
+                    answers: [
+                        { text: "《彩虹旋律》", correct: false },
+                        { text: "《星之碎片》", correct: false },
+                        { text: "《心跳节拍》", correct: true }
+                    ]
+                },
+                {
+                    text: "Scarlet的生日是哪一天？",
+                    hint: "提示：在夏季",
+                    answers: [
+                        { text: "5月18日", correct: false },
+                        { text: "6月18日", correct: true },
+                        { text: "7月18日", correct: false }
+                    ]
+                },
+                {
+                    text: "Scarlet获得过多少次动漫音乐榜冠军？",
+                    hint: "提示：连续获得",
+                    answers: [
+                        { text: "连续1个月", correct: false },
+                        { text: "连续3个月", correct: true },
+                        { text: "连续6个月", correct: false }
+                    ]
+                }
+            ];
+            
+            // 测试状态变量
+            let currentQuestion = 0;
+            let score = 0;
+            let timerInterval;
+            let timeLeft = 30;
+            let answered = false;
+            
+            // 初始化测试
+            function initQuiz() {
+                currentQuestion = 0;
+                score = 0;
+                timeLeft = 30;
+                
+                // 更新UI
+                quizProgress.textContent = `${currentQuestion + 1}/${questions.length}`;
+                progressBar.style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+                quizScore.textContent = score;
+                quizTimer.textContent = `00:${timeLeft.toString().padStart(2, '0')}`;
+                
+                // 重置界面
+                quizIntro.classList.remove('hidden');
+                questionContainer.classList.add('hidden');
+                quizResults.classList.add('hidden');
+                resetQuizBtn.disabled = true;
+                resetQuizBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+            
+            // 开始测试
+            function startQuiz() {
+                quizIntro.classList.add('hidden');
+                questionContainer.classList.remove('hidden');
+                resetQuizBtn.disabled = false;
+                resetQuizBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                
+                // 显示第一题
+                showQuestion(currentQuestion);
+            }
+            
+            // 显示问题
+            function showQuestion(index) {
+                if (index >= questions.length) {
+                    showResults();
+                    return;
+                }
+                
+                const question = questions[index];
+                questionText.textContent = `问题 ${index + 1}: ${question.text}`;
+                questionHint.textContent = question.hint;
+                answersContainer.innerHTML = '';
+                nextQuestionBtn.classList.add('hidden');
+                answered = false;
+                timeLeft = 30;
+                quizTimer.textContent = `00:${timeLeft.toString().padStart(2, '0')}`;
+                quizTimer.classList.remove('text-red-500');
+                
+                // 创建答案选项
+                question.answers.forEach((answer, i) => {
+                    const answerDiv = document.createElement('div');
+                    answerDiv.className = 'border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors animate-fade-in';
+                    answerDiv.style.animationDelay = `${i * 0.1}s`;
+                    answerDiv.innerHTML = `
+                        <div class="flex items-center">
+                            <span class="w-6 h-6 rounded-full border border-gray-400 flex items-center justify-center mr-3 flex-shrink-0">
+                                <span class="w-3 h-3 rounded-full bg-primary hidden"></span>
+                            </span>
+                            <span>${answer.text}</span>
+                        </div>
+                    `;
+                    
+                    // 存储答案是否正确
+                    answerDiv.dataset.correct = answer.correct;
+                    
+                    // 添加点击事件
+                    answerDiv.addEventListener('click', () => {
+                        if (!answered) {
+                            checkAnswer(answerDiv);
+                        }
+                    });
+                    
+                    answersContainer.appendChild(answerDiv);
+                });
+                
+                // 开始计时
+                startTimer();
+            }
+            
+            // 开始计时器
+            function startTimer() {
+                clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    quizTimer.textContent = `00:${timeLeft.toString().padStart(2, '0')}`;
+                    
+                    // 时间快用完时警告
+                    if (timeLeft <= 10) {
+                        quizTimer.classList.add('text-red-500');
+                    }
+                    
+                    // 时间到
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        if (!answered) {
+                            // 自动标记为错误
+                            const allAnswers = answersContainer.querySelectorAll('div');
+                            allAnswers.forEach(answer => {
+                                if (answer.dataset.correct === 'true') {
+                                    answer.classList.add('answer-correct');
+                                    answer.querySelector('.w-6').innerHTML = '<i class="fa fa-check text-white text-xs"></i>';
+                                }
+                            });
+                            answered = true;
+                            nextQuestionBtn.classList.remove('hidden');
+                        }
+                    }
+                }, 1000);
+            }
+            
+            // 检查答案
+            function checkAnswer(selectedAnswer) {
+                clearInterval(timerInterval);
+                answered = true;
+                
+                const allAnswers = answersContainer.querySelectorAll('div');
+                
+                // 标记正确和错误答案
+                allAnswers.forEach(answer => {
+                    if (answer.dataset.correct === 'true') {
+                        answer.classList.add('answer-correct');
+                        answer.querySelector('.w-6').innerHTML = '<i class="fa fa-check text-white text-xs"></i>';
+                    } else if (answer === selectedAnswer) {
+                        answer.classList.add('answer-incorrect');
+                        answer.querySelector('.w-6').innerHTML = '<i class="fa fa-times text-white text-xs"></i>';
+                    }
+                });
+                
+                // 如果答案正确，增加分数
+                if (selectedAnswer.dataset.correct === 'true') {
+                    score += 20;
+                    quizScore.textContent = score;
+                }
+                
+                // 显示下一题按钮
+                nextQuestionBtn.classList.remove('hidden');
+            }
+            
+            // 下一题
+            function nextQuestion() {
+                currentQuestion++;
+                quizProgress.textContent = `${currentQuestion + 1}/${questions.length}`;
+                progressBar.style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+                showQuestion(currentQuestion);
+            }
+            
+            // 显示结果
+            function showResults() {
+                clearInterval(timerInterval);
+                questionContainer.classList.add('hidden');
+                quizResults.classList.remove('hidden');
+                
+                // 更新结果
+                finalScore.textContent = score;
+                
+                // 根据分数设置不同的结果
+                if (score === 100) {
+                    resultIcon.className = 'fa fa-trophy text-accent';
+                    resultTitle.textContent = '恭喜你！满分通过！';
+                    resultDescription.textContent = '你是Scarlet的超级忠实粉丝，对她的一切都了如指掌！';
+                    fanTitle.textContent = '专属称号：Scarlet的守护者';
+                } else if (score >= 80) {
+                    resultIcon.className = 'fa fa-star text-primary';
+                    resultTitle.textContent = '非常出色！';
+                    resultDescription.textContent = '你对Scarlet非常了解，是一位合格的粉丝！';
+                    fanTitle.textContent = '专属称号：Scarlet核心粉丝';
+                } else if (score >= 60) {
+                    resultIcon.className = 'fa fa-thumbs-up text-secondary';
+                    resultTitle.textContent = '不错哦！';
+                    resultDescription.textContent = '你对Scarlet有一定了解，继续加油成为更忠实的粉丝吧！';
+                    fanTitle.textContent = '专属称号：Scarlet爱好者';
+                } else {
+                    resultIcon.className = 'fa fa-meh-o text-gray-500';
+                    resultTitle.textContent = '继续努力！';
+                    resultDescription.textContent = '你对Scarlet的了解还不够多，多关注她的作品和动态吧！';
+                    fanTitle.textContent = '专属称号：Scarlet初识者';
+                }
+            }
+            
+            // 事件监听
+            startQuizBtn.addEventListener('click', startQuiz);
+            resetQuizBtn.addEventListener('click', initQuiz);
+            playAgainBtn.addEventListener('click', initQuiz);
+            nextQuestionBtn.addEventListener('click', nextQuestion);
+            
+            // 初始化测试
+            initQuiz();
+        }
+        
+        // 应援墙功能
+        function setupFanWall() {
+            const form = document.getElementById('fan-message-form');
+            const nameInput = document.getElementById('fan-name');
+            const messageInput = document.getElementById('fan-message');
+            const messagesContainer = document.getElementById('messages-container');
+            const loadMoreBtn = document.getElementById('load-more');
+            
+            // 提交留言
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const name = nameInput.value.trim();
+                const message = messageInput.value.trim();
+                
+                if (!name || !message) {
+                    alert('请输入你的昵称和想对Scarlet说的话');
+                    return;
+                }
+                
+                // 创建新留言元素
+                const newMessage = document.createElement('div');
+                newMessage.className = 'bg-light p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow animate-float';
+                
+                // 随机生成粉丝头像
+                const randomSeed = 'fan' + Math.floor(Math.random() * 1000);
+                
+                newMessage.innerHTML = `
+                    <div class="flex items-center mb-4">
+                        <img src="https://picsum.photos/seed/${randomSeed}/100/100" alt="${name}的头像" class="w-12 h-12 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold">${name}</h4>
+                            <p class="text-gray-500 text-sm">刚刚</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">${message}</p>
+                    <div class="flex items-center text-gray-500">
+                        <button class="flex items-center hover:text-primary transition-colors">
+                            <i class="fa fa-heart-o mr-1"></i> 喜欢 (0)
+                        </button>
+                    </div>
+                `;
+                
+                // 添加到容器顶部
+                messagesContainer.insertBefore(newMessage, messagesContainer.firstChild);
+                
+                // 清空输入
+                nameInput.value = '';
+                messageInput.value = '';
+                
+                // 添加点赞功能
+                const likeBtn = newMessage.querySelector('button');
+                likeBtn.addEventListener('click', function() {
+                    const likeCountText = this.innerHTML;
+                    const likeCount = parseInt(likeCountText.match(/\d+/)[0]);
+                    this.innerHTML = likeCountText.replace(/\d+/, likeCount + 1);
+                    this.innerHTML = this.innerHTML.replace('fa-heart-o', 'fa-heart');
+                    this.classList.add('text-primary');
+                });
+            });
+            
+            // 为现有留言添加点赞功能
+            document.querySelectorAll('#messages-container button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const likeCountText = this.innerHTML;
+                    const likeCount = parseInt(likeCountText.match(/\d+/)[0]);
+                    this.innerHTML = likeCountText.replace(/\d+/, likeCount + 1);
+                    this.innerHTML = this.innerHTML.replace('fa-heart-o', 'fa-heart');
+                    this.classList.add('text-primary');
+                });
+            });
+            
+            // 加载更多
+            loadMoreBtn.addEventListener('click', function() {
+                this.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 加载中...';
+                
+                // 模拟加载延迟
+                setTimeout(() => {
+                    // 克隆现有留言并修改内容
+                    const existingMessages = document.querySelectorAll('#messages-container > div');
+                    const randomIndex = Math.floor(Math.random() * existingMessages.length);
+                    const clonedMessage = existingMessages[randomIndex].cloneNode(true);
+                    
+                    // 修改一些内容使其看起来不同
+                    const randomSeed = 'fan' + Math.floor(Math.random() * 1000);
+                    clonedMessage.querySelector('img').src = `https://picsum.photos/seed/${randomSeed}/100/100`;
+                    clonedMessage.querySelector('h4').textContent = '粉丝_' + Math.floor(Math.random() * 1000);
+                    clonedMessage.querySelector('.text-gray-500.text-sm').textContent = `${Math.floor(Math.random() * 7) + 1}天前`;
+                    
+                    // 重置点赞按钮
+                    const likeBtn = clonedMessage.querySelector('button');
+                    likeBtn.innerHTML = '<i class="fa fa-heart-o mr-1"></i> 喜欢 (0)';
+                    likeBtn.classList.remove('text-primary');
+                    
+                    // 添加点赞功能
+                    likeBtn.addEventListener('click', function() {
+                        const likeCountText = this.innerHTML;
+                        const likeCount = parseInt(likeCountText.match(/\d+/)[0]);
+                        this.innerHTML = likeCountText.replace(/\d+/, likeCount + 1);
+                        this.innerHTML = this.innerHTML.replace('fa-heart-o', 'fa-heart');
+                        this.classList.add('text-primary');
+                    });
+                    
+                    messagesContainer.appendChild(clonedMessage);
+                    
+                    this.innerHTML = '加载更多留言 <i class="fa fa-refresh ml-2"></i>';
+                }, 1500);
+            });
+        }
+        
+        // 页面加载完成后初始化所有功能
+        window.addEventListener('DOMContentLoaded', () => {
+            createBubbles();
+            setupImageViewer();
+            setupQuiz();
+            setupFanWall();
         });
     </script>
 
 
-    </body></html>
+</body></html>
